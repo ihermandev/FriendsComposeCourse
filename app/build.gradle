@@ -20,9 +20,19 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../.keystore/friendscourse")
+            storePassword STORE_PASS_FRIENDS
+            keyAlias KEY_ALIAS_FRIENDS
+            keyPassword KEY_PASS_FRIENDS
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
