@@ -23,9 +23,9 @@ android {
     signingConfigs {
         release {
             storeFile file("../.keystore/friendscourse")
-            storePassword System.getenv('STORE_PASS_FRIENDS') ?: STORE_PASS_FRIENDS
-            keyPassword System.getenv('KEY_PASS_FRIENDS') ?: KEY_PASS_FRIENDS
-            keyAlias System.getenv('KEY_ALIAS_FRIENDS') ?: KEY_ALIAS_FRIENDS
+            storePassword System.getenv('STORE_PASS_FRIENDS')
+            keyPassword System.getenv('KEY_PASS_FRIENDS')
+            keyAlias System.getenv('KEY_ALIAS_FRIENDS')
         }
     }
 
