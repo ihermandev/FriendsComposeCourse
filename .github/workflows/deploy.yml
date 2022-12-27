@@ -17,6 +17,7 @@ jobs:
                   java-version: 11
                   distribution: 'temurin'
                   cache: gradle
+
             - name: Assemble Release Bundle
               run: ./gradlew bundleRelease --info
             - name: Sign Release
@@ -37,6 +38,6 @@ jobs:
                   serviceAccountJson: service_account.json
                   packageName: i.herman
                   releaseFiles: app/build/outputs/bundle/release/app-release.aab
-                  track: alpha
+                  track: internal
                   status: 'completed'
                   whatsNewDirectory: whatsNewDirectory/
