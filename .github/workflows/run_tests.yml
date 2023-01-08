@@ -1,10 +1,9 @@
 name: Run tests
 
 on:
-  push:
-    branches: [ "master" ]
+
   pull_request:
-    branches: [ "master" ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -13,6 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: set up JDK 11
       uses: actions/setup-java@v3
       with:
@@ -22,5 +22,6 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
     - name: Run microtests
       run: ./gradlew testDebug
