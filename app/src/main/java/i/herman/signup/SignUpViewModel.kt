@@ -3,15 +3,15 @@ package i.herman.signup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import i.herman.signup.state.SignUpState
-import i.herman.signup.validation.CredentialsValidationResult
-import i.herman.signup.validation.RegexCredentialsValidator
+import i.herman.signup.domain.validation.CredentialsValidationResult
+import i.herman.signup.domain.validation.RegexCredentialsValidator
 
-class SignUpViewModel {
+class SignUpViewModel(
+    private val credentialsValidator: RegexCredentialsValidator
+) {
 
     private val _mutableSignUpState = MutableLiveData<SignUpState>()
     val signUpState: LiveData<SignUpState> = _mutableSignUpState
-
-    private val credentialsValidator =  RegexCredentialsValidator()
 
     fun createAccount(
         email: String,

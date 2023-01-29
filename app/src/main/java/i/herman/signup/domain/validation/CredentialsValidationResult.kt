@@ -1,4 +1,4 @@
-package i.herman.signup.validation
+package i.herman.signup.domain.validation
 
 sealed class CredentialsValidationResult {
 
