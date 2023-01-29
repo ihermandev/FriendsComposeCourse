@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Friends(Compose course)</string>
+    <string name="appName">Friends(Compose course)</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="signUp">Sign Up</string>
