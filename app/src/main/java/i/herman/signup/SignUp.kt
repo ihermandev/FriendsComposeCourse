@@ -18,6 +18,9 @@ import i.herman.R
 @Composable
 @Preview(device = Devices.PIXEL_4)
 fun SignUp() {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -28,14 +31,12 @@ fun SignUp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        var email by remember { mutableStateOf("") }
         EmailField(
             value = email,
             onValueChange = {
                 email = it
             })
 
-        var password by remember { mutableStateOf("") }
         PasswordField(
             value = password,
             onValueChange = {
@@ -43,6 +44,7 @@ fun SignUp() {
             })
 
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {}
@@ -62,27 +64,45 @@ private fun PasswordField(
         mutableStateOf(false)
     }
 
+    val visualTransformation = if (isVisible) {
+        VisualTransformation.None
+    } else {
+        PasswordVisualTransformation()
+    }
+
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
         trailingIcon = {
-            IconButton(
-                onClick = { isVisible = !isVisible }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_visibility_eye),
-                    contentDescription = stringResource(id = R.string.toggleVisibility))
+            VisibilityToggle(isVisible) {
+                isVisible = !isVisible
             }
         },
-        visualTransformation = if (isVisible) {
-            VisualTransformation.None
-        } else {
-            PasswordVisualTransformation()
-        },
+        visualTransformation = visualTransformation,
         onValueChange = onValueChange,
         label = {
             Text(text = stringResource(id = R.string.password))
         })
+}
+
+@Composable
+private fun VisibilityToggle(
+    isVisible: Boolean,
+    onToggle: () -> Unit,
+) {
+    val visibilityIcon = if (isVisible) {
+        painterResource(id = R.drawable.ic_visible_eye)
+    } else {
+        painterResource(id = R.drawable.ic_invisible_eye)
+    }
+
+    IconButton(
+        onClick = { onToggle() }
+    ) {
+        Icon(
+            painter = visibilityIcon,
+            contentDescription = stringResource(id = R.string.toggleVisibility))
+    }
 }
 
 @Composable
