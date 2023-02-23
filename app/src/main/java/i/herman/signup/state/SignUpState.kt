@@ -1,6 +1,6 @@
 package i.herman.signup.state
 
-import i.herman.signup.domain.user.User
+import i.herman.domain.user.User
 
 sealed class SignUpState {
 

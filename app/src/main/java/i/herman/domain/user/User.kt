@@ -1,4 +1,4 @@
-package i.herman.signup.domain.user
+package i.herman.domain.user
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

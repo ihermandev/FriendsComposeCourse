@@ -1,8 +1,8 @@
 package i.herman.signup
 
 import i.herman.InstantTaskExecutorExtension
-import i.herman.signup.domain.user.User
-import i.herman.signup.domain.validation.RegexCredentialsValidator
+import i.herman.domain.user.User
+import i.herman.domain.validation.RegexCredentialsValidator
 import i.herman.signup.state.SignUpState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

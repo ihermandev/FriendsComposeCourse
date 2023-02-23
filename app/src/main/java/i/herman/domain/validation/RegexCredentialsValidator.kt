@@ -1,4 +1,4 @@
-package i.herman.signup.domain.validation
+package i.herman.domain.validation
 
 import java.util.regex.Pattern
 
