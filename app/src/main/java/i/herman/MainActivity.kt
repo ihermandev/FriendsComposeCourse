@@ -10,11 +10,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import i.herman.signup.SignUp
+import i.herman.signup.SignUpScreen
+import i.herman.signup.SignUpViewModel
 import i.herman.timeline.Timeline
 import i.herman.ui.theme.FriendsComposeCourseTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val signUpViewModel: SignUpViewModel by viewModel()
 
     private companion object {
         private const val SIGN_UP = "signUp"
@@ -33,7 +37,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController = navController, startDestination = SIGN_UP) {
                         composable(SIGN_UP) {
-                            SignUp(onSignedUp = { navController.navigate(TIMELINE) })
+                            SignUpScreen(signUpViewModel) { navController.navigate(TIMELINE) }
                         }
                         composable(TIMELINE) {
                             Timeline()

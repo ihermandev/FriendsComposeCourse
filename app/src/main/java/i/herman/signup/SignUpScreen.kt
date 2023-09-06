@@ -1,6 +1,7 @@
 package i.herman.signup
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
@@ -11,8 +12,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Devices
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import i.herman.R
 import i.herman.domain.user.InMemoryUserCatalog
@@ -21,13 +20,10 @@ import i.herman.domain.validation.RegexCredentialsValidator
 import i.herman.signup.state.SignUpState
 
 @Composable
-@Preview(device = Devices.PIXEL_4)
-fun SignUp(
-    onSignedUp: () -> Unit
+fun SignUpScreen(
+    signUpViewModel: SignUpViewModel,
+    onSignedUp: () -> Unit,
 ) {
-    val credentialsValidator = RegexCredentialsValidator()
-    val userRepository = UserRepository(InMemoryUserCatalog())
-    val signUpViewModel = SignUpViewModel(credentialsValidator, userRepository)
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -39,42 +35,50 @@ fun SignUp(
         onSignedUp()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-
-        ScreenTitle(R.string.createAnAccount)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        EmailField(
-            value = email,
-            onValueChange = {
-                email = it
-            })
-
-        PasswordField(
-            value = password,
-            onValueChange = {
-                password = it
-            })
-        AboutField(
-            value = about,
-            onValueChange = { about = it }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                signUpViewModel.createAccount(email, password, "")
-            }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Text(text = stringResource(id = R.string.signUp))
+            ScreenTitle(R.string.createAnAccount)
+            Spacer(modifier = Modifier.height(16.dp))
+            EmailField(
+                value = email,
+                onValueChange = { email = it }
+            )
+            PasswordField(
+                value = password,
+                onValueChange = { password = it }
+            )
+            AboutField(
+                value = about,
+                onValueChange = { about = it }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    signUpViewModel.createAccount(email, password, about)
+                }
+            ) {
+                Text(text = stringResource(id = R.string.signUp))
+            }
+            if (signUpState is SignUpState.DuplicateAccount) {
+                InfoMessage(R.string.duplicateAccountError)
+            }
         }
+    }
+}
 
+@Composable
+fun InfoMessage(@StringRes stringResource: Int) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colors.secondaryVariant)
+    ) {
+        Text(text = stringResource(id = stringResource))
     }
 }
 
@@ -124,7 +128,8 @@ private fun VisibilityToggle(
     ) {
         Icon(
             painter = visibilityIcon,
-            contentDescription = stringResource(id = R.string.toggleVisibility))
+            contentDescription = stringResource(id = R.string.toggleVisibility)
+        )
     }
 }
 
@@ -161,7 +166,7 @@ private fun ScreenTitle(
 @Composable
 fun AboutField(
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
