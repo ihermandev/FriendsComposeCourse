@@ -4,12 +4,12 @@ import i.herman.domain.exceptions.DuplicateAccountException
 
 class InMemoryUserCatalog(
     private val usersForPassword: MutableMap<String, MutableList<User>> = mutableMapOf(),
-) {
+): UserCatalog  {
 
-    fun createUser(
+    override fun createUser(
         email: String,
-        about: String,
         password: String,
+        about: String,
     ): User {
         checkAccountExist(email)
         val userId = createUserIdFor(email)

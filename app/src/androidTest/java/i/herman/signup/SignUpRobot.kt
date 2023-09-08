@@ -60,4 +60,28 @@ class SignUpVerification(
         rule.onNodeWithText(duplicateAccountError)
             .assertIsDisplayed()
     }
+
+    fun backendErrorIsShown() {
+        val backendError = rule.activity.getString(R.string.createAccountError)
+        rule.onNodeWithText(backendError)
+            .assertIsDisplayed()
+    }
+
+    fun offlineErrorIsShown() {
+        val offlineError = rule.activity.getString(R.string.offlineError)
+        rule.onNodeWithText(offlineError)
+            .assertIsDisplayed()
+    }
+
+    fun badEmailErrorIsShown() {
+        val badEmail = rule.activity.getString(R.string.badEmailError)
+        rule.onNodeWithText(badEmail)
+            .assertIsDisplayed()
+    }
+
+    fun badPasswordErrorIsShown() {
+        val badPassword = rule.activity.getString(R.string.badPasswordError)
+        rule.onNodeWithText(badPassword)
+            .assertIsDisplayed()
+    }
 }

@@ -26,7 +26,9 @@ fun SignUpScreen(
 ) {
 
     var email by remember { mutableStateOf("") }
+    var isBadEmail by remember { mutableStateOf(false) }
     var password by remember { mutableStateOf("") }
+    var isBadPassword by remember { mutableStateOf(false) }
     var about by remember { mutableStateOf("") }
 
     val signUpState by signUpViewModel.signUpState.observeAsState()
@@ -45,10 +47,12 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(16.dp))
             EmailField(
                 value = email,
+                isError = isBadEmail,
                 onValueChange = { email = it }
             )
             PasswordField(
                 value = password,
+                isError = isBadPassword,
                 onValueChange = { password = it }
             )
             AboutField(
@@ -64,8 +68,16 @@ fun SignUpScreen(
             ) {
                 Text(text = stringResource(id = R.string.signUp))
             }
-            if (signUpState is SignUpState.DuplicateAccount) {
+            if (signUpState is SignUpState.InvalidEmail) {
+                isBadEmail = true
+            } else if (signUpState is SignUpState.InvalidPassword) {
+                isBadPassword = true
+            } else if (signUpState is SignUpState.DuplicateAccount) {
                 InfoMessage(R.string.duplicateAccountError)
+            } else if (signUpState is SignUpState.BackendError) {
+                InfoMessage(stringResource = R.string.createAccountError)
+            } else if (signUpState is SignUpState.Offline) {
+                InfoMessage(stringResource = R.string.offlineError)
             }
         }
     }
@@ -85,6 +97,7 @@ fun InfoMessage(@StringRes stringResource: Int) {
 @Composable
 private fun PasswordField(
     value: String,
+    isError: Boolean,
     onValueChange: (String) -> Unit,
 ) {
     var isVisible by remember {
@@ -100,6 +113,7 @@ private fun PasswordField(
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
+        isError = isError,
         trailingIcon = {
             VisibilityToggle(isVisible) {
                 isVisible = !isVisible
@@ -108,7 +122,8 @@ private fun PasswordField(
         visualTransformation = visualTransformation,
         onValueChange = onValueChange,
         label = {
-            Text(text = stringResource(id = R.string.password))
+            val resource = if (isError) R.string.badPasswordError else R.string.password
+            Text(text = stringResource(id = resource))
         })
 }
 
@@ -136,14 +151,17 @@ private fun VisibilityToggle(
 @Composable
 private fun EmailField(
     value: String,
+    isError: Boolean,
     onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
+        isError = isError,
         onValueChange = onValueChange,
         label = {
-            Text(text = stringResource(id = R.string.email))
+            val resource = if (isError) R.string.badEmailError else R.string.email
+            Text(text = stringResource(id = resource))
         })
 }
 

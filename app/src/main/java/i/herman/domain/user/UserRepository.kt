@@ -1,9 +1,11 @@
 package i.herman.domain.user
 
+import i.herman.domain.exceptions.BackendException
+import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.domain.exceptions.DuplicateAccountException
 import i.herman.signup.state.SignUpState
 
-class UserRepository(private val usersCatalog: InMemoryUserCatalog) {
+class UserRepository(private val usersCatalog: UserCatalog) {
 
     fun signUp(
         email: String,
@@ -15,6 +17,11 @@ class UserRepository(private val usersCatalog: InMemoryUserCatalog) {
             SignUpState.SignedUp(user)
         } catch (duplicateAccount: DuplicateAccountException) {
             SignUpState.DuplicateAccount
+        } catch (backendException: BackendException) {
+            SignUpState.BackendError
+        } catch (offlineException: ConnectionUnavailableException) {
+            SignUpState.Offline
         }
+
     }
 }
