@@ -2,6 +2,7 @@ package i.herman.signup
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
@@ -22,13 +23,13 @@ class SignUpRobot(
 
     fun typeEmail(email: String) {
         val emailHint = rule.activity.getString(R.string.email)
-        rule.onNodeWithText(emailHint)
+        rule.onNodeWithTag(emailHint)
             .performTextInput(email)
     }
 
     fun typePassword(password: String) {
         val passwordHint = rule.activity.getString(R.string.password)
-        rule.onNodeWithText(passwordHint)
+        rule.onNodeWithTag(passwordHint)
             .performTextInput(password)
     }
 
@@ -83,5 +84,17 @@ class SignUpVerification(
         val badPassword = rule.activity.getString(R.string.badPasswordError)
         rule.onNodeWithText(badPassword)
             .assertIsDisplayed()
+    }
+
+    fun badEmailErrorIsNotShown() {
+        val badEmail = rule.activity.getString(R.string.badEmailError)
+        rule.onNodeWithText(badEmail)
+            .assertDoesNotExist()
+    }
+
+    fun badPasswordErrorIsNotShown() {
+        val badPassword = rule.activity.getString(R.string.badPasswordError)
+        rule.onNodeWithText(badPassword)
+            .assertDoesNotExist()
     }
 }

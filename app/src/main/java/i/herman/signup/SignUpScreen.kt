@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -71,12 +72,12 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(16.dp))
             EmailField(
                 value = screenState.email,
-                isError = screenState.isBadEmail,
+                isError = screenState.showBadEmail,
                 onValueChange = { screenState.email = it }
             )
             PasswordField(
                 value = screenState.password,
-                isError = screenState.isBadPassword,
+                isError = screenState.showBadPassword,
                 onValueChange = { screenState.password = it }
             )
             AboutField(
@@ -156,7 +157,9 @@ private fun PasswordField(
     }
 
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(stringResource(id = R.string.password)),
         value = value,
         isError = isError,
         trailingIcon = {
@@ -200,7 +203,9 @@ private fun EmailField(
     onValueChange: (String) -> Unit,
 ) {
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(stringResource(id = R.string.email)),
         value = value,
         isError = isError,
         onValueChange = onValueChange,
