@@ -30,11 +30,17 @@ fun SignUpScreen(
     var password by remember { mutableStateOf("") }
     var isBadPassword by remember { mutableStateOf(false) }
     var about by remember { mutableStateOf("") }
+    var currentInfoMessage by remember { mutableStateOf(0) }
 
     val signUpState by signUpViewModel.signUpState.observeAsState()
 
-    if (signUpState is SignUpState.SignedUp) {
-        onSignedUp()
+    when (signUpState) {
+        is SignUpState.SignedUp -> onSignedUp()
+        is SignUpState.InvalidEmail -> isBadEmail = true
+        is SignUpState.InvalidPassword -> isBadPassword = true
+        is SignUpState.DuplicateAccount -> currentInfoMessage = R.string.duplicateAccountError
+        is SignUpState.BackendError -> currentInfoMessage = R.string.createAccountError
+        is SignUpState.Offline -> currentInfoMessage = R.string.offlineError
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -68,17 +74,9 @@ fun SignUpScreen(
             ) {
                 Text(text = stringResource(id = R.string.signUp))
             }
-            if (signUpState is SignUpState.InvalidEmail) {
-                isBadEmail = true
-            } else if (signUpState is SignUpState.InvalidPassword) {
-                isBadPassword = true
-            } else if (signUpState is SignUpState.DuplicateAccount) {
-                InfoMessage(R.string.duplicateAccountError)
-            } else if (signUpState is SignUpState.BackendError) {
-                InfoMessage(stringResource = R.string.createAccountError)
-            } else if (signUpState is SignUpState.Offline) {
-                InfoMessage(stringResource = R.string.offlineError)
-            }
+        }
+        if (currentInfoMessage != 0) {
+            InfoMessage(stringResource = currentInfoMessage)
         }
     }
 }
@@ -86,11 +84,20 @@ fun SignUpScreen(
 @Composable
 fun InfoMessage(@StringRes stringResource: Int) {
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.secondaryVariant)
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colors.error,
+        elevation = 4.dp
     ) {
-        Text(text = stringResource(id = stringResource))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = stringResource(id = stringResource),
+                color = MaterialTheme.colors.onError
+            )
+        }
     }
 }
 
