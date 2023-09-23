@@ -4,6 +4,7 @@ import i.herman.domain.exceptions.DuplicateAccountException
 
 class InMemoryUserCatalog(
     private val usersForPassword: MutableMap<String, MutableList<User>> = mutableMapOf(),
+    private val followings: List<Following> = mutableListOf()
 ): UserCatalog  {
 
     override suspend fun createUser(
@@ -16,6 +17,12 @@ class InMemoryUserCatalog(
         val user = User(userId, email, about)
         saveUser(password, user)
         return user
+    }
+
+    override fun followedBy(userId: String): List<String> {
+        return followings
+            .filter { it.userId == userId }
+            .map { it.followedId }
     }
 
     private fun checkAccountExist(email: String) {

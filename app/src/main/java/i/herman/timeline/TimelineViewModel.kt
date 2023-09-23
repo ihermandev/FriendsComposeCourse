@@ -2,39 +2,21 @@ package i.herman.timeline
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import i.herman.domain.post.Post
-import i.herman.domain.user.Following
+import i.herman.domain.post.InMemoryPostCatalog
+import i.herman.domain.user.UserCatalog
 import i.herman.timeline.state.TimelineState
 
-class TimelineViewModel {
+class TimelineViewModel(
+    private val userCatalog: UserCatalog,
+    private val postCatalog: InMemoryPostCatalog
+) {
 
     private val mutableTimelineState = MutableLiveData<TimelineState>()
     val timelineState: LiveData<TimelineState> = mutableTimelineState
 
     fun timelineFor(userId: String) {
-        val followings = listOf(
-            Following("saraId", "lucyId"),
-            Following("annaId", "lucyId")
-        )
-        val userIds = listOf(userId) + followings
-            .filter { it.userId == userId }
-            .map { it.followedId }
-
-        val postsForUser = InMemoryPostCatalog().postsFor(userIds)
+        val userIds = listOf(userId) + userCatalog.followedBy(userId)
+        val postsForUser = postCatalog.postsFor(userIds)
         mutableTimelineState.value = TimelineState.Posts(postsForUser)
-    }
-
-    class InMemoryPostCatalog {
-
-        fun postsFor(userIds: List<String>): List<Post> {
-            val availablePosts = listOf(
-                Post("postId", "timId", "post text", 1L),
-                Post("post2", "lucyId", "post 2", 2L),
-                Post("post1", "lucyId", "post 1", 1L),
-                Post("post4", "saraId", "post 4", 4L),
-                Post("post3", "saraId", "post 3", 3L)
-            )
-            return availablePosts.filter { userIds.contains(it.userId) }
-        }
     }
 }
