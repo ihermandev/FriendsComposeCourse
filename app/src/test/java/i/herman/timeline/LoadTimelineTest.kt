@@ -3,6 +3,7 @@ package i.herman.timeline
 import i.herman.InstantTaskExecutorExtension
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.Post
+import i.herman.domain.timeline.TimelineRepository
 import i.herman.domain.user.Following
 import i.herman.domain.user.InMemoryUserCatalog
 import i.herman.infrastructure.builder.UserBuilder.Companion.aUser
@@ -11,8 +12,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
+
 @ExtendWith(InstantTaskExecutorExtension::class)
-class LoadPostsTest {
+class LoadTimelineTest {
 
     private val tim = aUser().withId("timId").build()
     private val anna = aUser().withId("annaId").build()
@@ -35,9 +37,10 @@ class LoadPostsTest {
 
     @Test
     fun noPostsAvailable() {
+        val userCatalog = InMemoryUserCatalog()
+        val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
-            InMemoryUserCatalog(),
-            InMemoryPostCatalog(availablePosts)
+            TimelineRepository(userCatalog, postCatalog)
         )
 
         viewModel.timelineFor("tomId")
@@ -47,9 +50,10 @@ class LoadPostsTest {
 
     @Test
     fun postsAvailable() {
+        val userCatalog = InMemoryUserCatalog()
+        val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
-            InMemoryUserCatalog(),
-            InMemoryPostCatalog(availablePosts)
+            TimelineRepository(userCatalog, postCatalog)
         )
 
         viewModel.timelineFor(tim.id)
@@ -59,13 +63,14 @@ class LoadPostsTest {
 
     @Test
     fun postsFormFriends() {
+        val userCatalog = InMemoryUserCatalog(
+            followings = listOf(
+                Following(anna.id, lucy.id)
+            )
+        )
+        val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
-            InMemoryUserCatalog(
-                followings = listOf(
-                    Following(anna.id, lucy.id)
-                )
-            ),
-            InMemoryPostCatalog(availablePosts)
+            TimelineRepository(userCatalog, postCatalog)
         )
 
         viewModel.timelineFor(anna.id)
@@ -75,13 +80,14 @@ class LoadPostsTest {
 
     @Test
     fun postsFromFriendsAlongOwn() {
+        val userCatalog = InMemoryUserCatalog(
+            followings = listOf(
+                Following(sara.id, lucy.id)
+            )
+        )
+        val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
-            InMemoryUserCatalog(
-                followings = listOf(
-                    Following(sara.id, lucy.id)
-                )
-            ),
-            InMemoryPostCatalog(availablePosts)
+            TimelineRepository(userCatalog, postCatalog)
         )
 
         viewModel.timelineFor(sara.id)

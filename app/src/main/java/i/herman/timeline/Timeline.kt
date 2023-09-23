@@ -6,6 +6,6 @@ import androidx.compose.ui.res.stringResource
 import i.herman.R
 
 @Composable
-fun Timeline() {
+fun TimelineScreen() {
     Text(text = stringResource(id = R.string.timeline))
 }

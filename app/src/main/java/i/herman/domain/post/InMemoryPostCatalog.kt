@@ -1,10 +1,10 @@
 package i.herman.domain.post
 
 class InMemoryPostCatalog(
-    private val availablePosts: List<Post>
-) {
+    private val availablePosts: List<Post>,
+) : PostCatalog {
 
-    fun postsFor(userIds: List<String>): List<Post> {
+    override fun postsFor(userIds: List<String>): List<Post> {
         return availablePosts.filter { userIds.contains(it.userId) }
     }
 }

@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import i.herman.signup.SignUpScreen
 import i.herman.signup.SignUpViewModel
-import i.herman.timeline.Timeline
+import i.herman.timeline.TimelineScreen
 import i.herman.ui.theme.FriendsComposeCourseTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                             SignUpScreen(signUpViewModel) { navController.navigate(TIMELINE) }
                         }
                         composable(TIMELINE) {
-                            Timeline()
+                            TimelineScreen()
                         }
                     }
                 }
