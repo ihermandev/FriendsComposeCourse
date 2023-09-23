@@ -9,6 +9,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val applicationModule = module {
+    single<CoroutineDispatchers> { DefaultDispatchers() }
     single<UserCatalog> { InMemoryUserCatalog() }
     factory { RegexCredentialsValidator() }
     factory { UserRepository(usersCatalog = get()) }
@@ -16,7 +17,8 @@ val applicationModule = module {
     viewModel {
         SignUpViewModel(
             credentialsValidator = get(),
-            userRepository = get()
+            userRepository = get(),
+            dispatchers = get()
         )
     }
 }

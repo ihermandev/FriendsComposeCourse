@@ -7,7 +7,7 @@ import i.herman.signup.state.SignUpState
 
 class UserRepository(private val usersCatalog: UserCatalog) {
 
-    fun signUp(
+    suspend fun signUp(
         email: String,
         about: String,
         password: String,

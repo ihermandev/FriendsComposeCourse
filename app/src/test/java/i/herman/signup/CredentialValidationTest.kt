@@ -1,6 +1,7 @@
 package i.herman.signup
 
 import i.herman.InstantTaskExecutorExtension
+import i.herman.app.TestDispatchers
 import i.herman.domain.user.InMemoryUserCatalog
 import i.herman.domain.user.UserRepository
 import i.herman.domain.validation.CredentialsValidationResult
@@ -37,7 +38,8 @@ class CredentialValidationTest {
         "'      '"
     )
     fun invalidEmail(email: String) {
-        val viewModel = SignUpViewModel(regexCredentialsValidator, userRepository)
+        val viewModel =
+            SignUpViewModel(regexCredentialsValidator, userRepository, TestDispatchers())
 
         viewModel.createAccount(email, ":password:", ":about:")
 
@@ -54,7 +56,8 @@ class CredentialValidationTest {
         "'QWERTY'",
     )
     fun invalidPassword(password: String) {
-        val viewModel = SignUpViewModel(regexCredentialsValidator, userRepository)
+        val viewModel =
+            SignUpViewModel(regexCredentialsValidator, userRepository, TestDispatchers())
 
         viewModel.createAccount("ann@friends.com", password, ":about:")
 

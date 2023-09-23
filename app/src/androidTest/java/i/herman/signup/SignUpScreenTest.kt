@@ -6,7 +6,9 @@ import i.herman.domain.exceptions.BackendException
 import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.domain.user.InMemoryUserCatalog
 import i.herman.domain.user.User
+import kotlinx.coroutines.delay
 import i.herman.domain.user.UserCatalog
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -84,7 +86,7 @@ class SignUpScreenTest {
     }
 
     @Test
-    fun displayDuplicateAccountError() {
+    fun displayDuplicateAccountError() = runBlocking<Unit> {
         val signedUpUserEmail = "alice@friends.com"
         val signedUpUserPassword = "@l1cePass"
         replaceUserCatalogWith(InMemoryUserCatalog().apply {
@@ -126,6 +128,18 @@ class SignUpScreenTest {
         }
     }
 
+    @Test
+    fun displayBlockingLoading() {
+        replaceUserCatalogWith(DelayingUserCatalog())
+        launchSignUpScreen(signUpTestRule) {
+            typeEmail("caly@friends.com")
+            typePassword("C@lyP1ss#")
+            submit()
+        } verify {
+            blockingLoadingIsShown()
+        }
+    }
+
     @After
     fun tearDown() {
         replaceUserCatalogWith(InMemoryUserCatalog())
@@ -138,16 +152,24 @@ class SignUpScreenTest {
         loadKoinModules(replaceModule)
     }
 
+    class DelayingUserCatalog : UserCatalog {
+
+        override suspend fun createUser(email: String, password: String, about: String): User {
+            delay(1000)
+            return User("someId", email, about)
+        }
+    }
+
     class UnavailableUserCatalog : UserCatalog {
 
-        override fun createUser(email: String, password: String, about: String): User {
+        override suspend fun createUser(email: String, password: String, about: String): User {
             throw BackendException()
         }
     }
 
     class OfflineUserCatalog : UserCatalog {
 
-        override fun createUser(email: String, password: String, about: String): User {
+        override suspend fun createUser(email: String, password: String, about: String): User {
             throw ConnectionUnavailableException()
         }
     }

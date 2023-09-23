@@ -39,7 +39,7 @@ class SignUpRobot(
             .performClick()
     }
 
-    infix fun verify(
+     infix fun verify(
         block: SignUpVerification.() -> Unit,
     ): SignUpVerification {
         return SignUpVerification(rule).apply(block)
@@ -97,4 +97,10 @@ class SignUpVerification(
         rule.onNodeWithText(badPassword)
             .assertDoesNotExist()
     }
+    fun blockingLoadingIsShown() {
+        val loading = rule.activity.getString(R.string.loading)
+        rule.onNodeWithTag(loading)
+            .assertIsDisplayed()
+    }
+
 }
