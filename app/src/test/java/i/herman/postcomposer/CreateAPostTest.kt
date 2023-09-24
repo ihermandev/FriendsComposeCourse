@@ -1,6 +1,7 @@
 package i.herman.postcomposer
 
 import i.herman.InstantTaskExecutorExtension
+import i.herman.app.TestDispatchers
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.Post
 import i.herman.domain.post.PostRepository
@@ -28,7 +29,8 @@ class CreateAPostTest {
                     idGenerator = idGenerator,
                     clock = clock
                 )
-            )
+            ),
+            TestDispatchers()
         )
 
         viewModel.createPost(postText)
@@ -49,7 +51,8 @@ class CreateAPostTest {
                     idGenerator = idGenerator,
                     clock = clock
                 )
-            )
+            ),
+            TestDispatchers()
         )
 
         viewModel.createPost(postText)

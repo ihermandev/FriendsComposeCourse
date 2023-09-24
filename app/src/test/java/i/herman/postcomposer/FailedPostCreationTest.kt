@@ -3,6 +3,7 @@ package i.herman.postcomposer
 import com.ihermandev.sharedtest.domain.post.OfflinePostCatalog
 import com.ihermandev.sharedtest.domain.post.UnavailablePostCatalog
 import i.herman.InstantTaskExecutorExtension
+import i.herman.app.TestDispatchers
 import i.herman.domain.post.PostRepository
 import i.herman.domain.user.InMemoryUserData
 import i.herman.postcomposer.state.CreatePostState
@@ -20,7 +21,8 @@ class FailedPostCreationTest {
             PostRepository(
                 InMemoryUserData("userId"),
                 UnavailablePostCatalog()
-            )
+            ),
+            TestDispatchers()
         )
 
         viewModel.createPost(":backend:")
@@ -34,7 +36,8 @@ class FailedPostCreationTest {
             PostRepository(
                 InMemoryUserData("userId"),
                 OfflinePostCatalog()
-            )
+            ),
+            TestDispatchers()
         )
 
         viewModel.createPost(":offline:")
