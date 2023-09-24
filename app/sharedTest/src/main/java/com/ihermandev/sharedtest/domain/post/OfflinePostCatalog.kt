@@ -6,7 +6,7 @@ import i.herman.domain.post.PostCatalog
 
 class OfflinePostCatalog : PostCatalog {
 
-    override fun addPost(userId: String, postText: String): Post {
+    override suspend fun addPost(userId: String, postText: String): Post {
         throw ConnectionUnavailableException()
     }
 

@@ -8,10 +8,10 @@ import i.herman.postcomposer.state.CreatePostState
 
 class PostRepository(
     private val userData: InMemoryUserData,
-    private val postCatalog: PostCatalog
+    private val postCatalog: PostCatalog,
 ) {
 
-    fun createNewPost(postText: String): CreatePostState {
+    suspend fun createNewPost(postText: String): CreatePostState {
         return try {
             val post = postCatalog.addPost(userData.loggedInUserId(), postText)
             CreatePostState.Created(post)
