@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import i.herman.postcomposer.CreateNewPostScreen
+import i.herman.postcomposer.CreatePostViewModel
 import i.herman.signup.SignUpScreen
 import i.herman.signup.SignUpViewModel
 import i.herman.timeline.TimelineScreen
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
 
     private val signUpViewModel: SignUpViewModel by viewModel()
     private val timelineViewModel: TimelineViewModel by viewModel()
+    private val createPostViewModel: CreatePostViewModel by viewModel()
 
     private companion object {
         private const val SIGN_UP = "signUp"
@@ -53,7 +55,9 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(CREATE_NEW_POST) {
-                            CreateNewPostScreen()
+                            CreateNewPostScreen(createPostViewModel) {
+                                navController.navigateUp()
+                            }
                         }
                     }
                 }
