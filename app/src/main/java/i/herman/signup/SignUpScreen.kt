@@ -46,12 +46,13 @@ import androidx.compose.ui.unit.dp
 import i.herman.R
 import i.herman.signup.state.SignUpScreenState
 import i.herman.signup.state.SignUpState
+import i.herman.ui.composables.ScreenTitle
 
 
 @Composable
 fun SignUpScreen(
     signUpViewModel: SignUpViewModel,
-    onSignedUp: () -> Unit,
+    onSignedUp: (String) -> Unit,
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -60,7 +61,7 @@ fun SignUpScreen(
 
     when (signUpState) {
         is SignUpState.Loading -> screenState.toggleLoading()
-        is SignUpState.SignedUp -> onSignedUp()
+        is SignUpState.SignedUp -> onSignedUp((signUpState as SignUpState.SignedUp).user.id)
         is SignUpState.InvalidEmail -> screenState.showBadEmail()
         is SignUpState.InvalidPassword -> screenState.showBadPassword()
         is SignUpState.DuplicateAccount -> screenState.toggleInfoMessage(R.string.duplicateAccountError)
@@ -248,22 +249,6 @@ private fun EmailField(
             Text(text = stringResource(id = resource))
         })
 }
-
-@Composable
-private fun ScreenTitle(
-    @StringRes titleId: Int,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(id = titleId),
-            style = typography.h4
-        )
-    }
-}
-
 
 @Composable
 fun AboutField(
