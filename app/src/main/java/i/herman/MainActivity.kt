@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import i.herman.postcomposer.CreateNewPostScreen
 import i.herman.signup.SignUpScreen
 import i.herman.signup.SignUpViewModel
 import i.herman.timeline.TimelineScreen
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
     private companion object {
         private const val SIGN_UP = "signUp"
         private const val TIMELINE = "timeline"
+        private const val CREATE_NEW_POST = "createNewPost"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,9 +47,13 @@ class MainActivity : ComponentActivity() {
                             arguments = listOf(navArgument("userId") { })
                         ) { backStackEntry ->
                             TimelineScreen(
-                                backStackEntry.arguments?.getString("userId") ?: "",
-                                timelineViewModel
+                                userId = backStackEntry.arguments?.getString("userId") ?: "",
+                                timelineViewModel = timelineViewModel,
+                                onCreateNewPost = { navController.navigate(CREATE_NEW_POST) }
                             )
+                        }
+                        composable(CREATE_NEW_POST) {
+                            CreateNewPostScreen()
                         }
                     }
                 }

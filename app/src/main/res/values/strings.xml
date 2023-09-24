@@ -14,4 +14,18 @@
     <string name="badPasswordError">Required small, capital, digit and special char</string>
     <string name="loading">Loading</string>
     <string name="emptyTimelineMessage">There are no posts available yet ;)</string>
+    <string name="createNewPost">Create new post</string>
+    <string name="fetchingTimelineError">Failed fetching the timeline :(</string>
+    <string name="newPostHint">What\'s on your mind?</string>
+    <string name="submitPost">Submit Post</string>
+    <string name="creatingPostError">Cannot create a new post!</string>
+    <string name="friends">Friends</string>
+    <string name="emptyFriendsMessage">There are no friends available yet :(</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="fetchingFriendsError">Failed fetching friends :(</string>
+    <string name="followFriend">Follow %1$s</string>
+    <string name="unfollowFriend">Unfollow %1$s</string>
+    <string name="updatingFriendship">Updating friendship for %1$s</string>
+    <string name="errorFollowingFriend">Error updating following</string>
 </resources>
