@@ -1,7 +1,5 @@
 package i.herman.domain.post
 
-import i.herman.domain.exceptions.BackendException
-import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.infrastructure.Clock
 import i.herman.infrastructure.IdGenerator
 import i.herman.infrastructure.SystemClock
@@ -14,11 +12,6 @@ class InMemoryPostCatalog(
 ) : PostCatalog {
 
     override fun addPost(userId: String, postText: String): Post {
-        if (postText == ":backend:") {
-            throw BackendException()
-        } else if (postText == ":offline:") {
-            throw ConnectionUnavailableException()
-        }
         val timestamp = clock.now()
         val postId = idGenerator.next()
         return Post(postId, userId, postText, timestamp)

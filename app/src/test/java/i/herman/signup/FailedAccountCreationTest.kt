@@ -1,9 +1,7 @@
 package i.herman.signup
 
-import i.herman.domain.exceptions.BackendException
-import i.herman.domain.exceptions.ConnectionUnavailableException
-import i.herman.domain.user.User
-import i.herman.domain.user.UserCatalog
+import i.herman.domain.user.OfflineUserCatalog
+import i.herman.domain.user.UnavailableUserCatalog
 import i.herman.domain.user.UserRepository
 import i.herman.signup.state.SignUpState
 import kotlinx.coroutines.runBlocking
@@ -28,27 +26,5 @@ class FailedAccountCreationTest {
         val result = userRepository.signUp(":email:", ":password:", ":about:")
 
         assertEquals(SignUpState.Offline, result)
-    }
-
-    class OfflineUserCatalog : UserCatalog {
-
-        override suspend fun createUser(email: String, password: String, about: String): User {
-            throw ConnectionUnavailableException()
-        }
-
-        override fun followedBy(userId: String): List<String> {
-            TODO("Not yet implemented")
-        }
-    }
-
-    class UnavailableUserCatalog : UserCatalog {
-
-        override suspend fun createUser(email: String, password: String, about: String): User {
-            throw BackendException()
-        }
-
-        override fun followedBy(userId: String): List<String> {
-            TODO("Not yet implemented")
-        }
     }
 }

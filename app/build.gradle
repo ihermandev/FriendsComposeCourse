@@ -42,6 +42,17 @@ android {
         }
     }
 
+    sourceSets {
+        def sharedTestDirectory = "src/sharedTest/java"
+        test {
+            java.srcDir sharedTestDirectory
+        }
+
+        androidTest {
+            java.srcDir sharedTestDirectory
+        }
+    }
+
     buildFeatures {
         compose true
     }
