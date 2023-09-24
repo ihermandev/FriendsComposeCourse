@@ -1,6 +1,7 @@
 package i.herman.postcomposer
 
 import i.herman.InstantTaskExecutorExtension
+import i.herman.domain.post.PostRepository
 import i.herman.domain.user.InMemoryUserData
 import i.herman.infrastructure.ControllableClock
 import i.herman.infrastructure.ControllableIdGenerator
@@ -15,10 +16,11 @@ class FailedPostCreationTest {
 
     @Test
     fun backedError() {
+        val userData = InMemoryUserData("userId")
+        val clock = ControllableClock(1L)
+        val idGenerator = ControllableIdGenerator("postId1")
         val viewModel = CreatePostViewModel(
-            InMemoryUserData("userId"),
-            ControllableClock(1L),
-            ControllableIdGenerator("postId1")
+            PostRepository(userData, clock, idGenerator)
         )
 
         viewModel.createPost(":backend:")
@@ -28,10 +30,11 @@ class FailedPostCreationTest {
 
     @Test
     fun offlineError() {
+        val userData = InMemoryUserData("userId")
+        val clock = ControllableClock(1L)
+        val idGenerator = ControllableIdGenerator("postId2")
         val viewModel = CreatePostViewModel(
-            InMemoryUserData("userId"),
-            ControllableClock(1L),
-            ControllableIdGenerator("postId2")
+            PostRepository(userData, clock, idGenerator)
         )
 
         viewModel.createPost(":offline:")

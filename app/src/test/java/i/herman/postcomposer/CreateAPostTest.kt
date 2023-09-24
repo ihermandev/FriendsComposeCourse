@@ -2,6 +2,7 @@ package i.herman.postcomposer
 
 import i.herman.InstantTaskExecutorExtension
 import i.herman.domain.post.Post
+import i.herman.domain.post.PostRepository
 import i.herman.domain.user.InMemoryUserData
 import i.herman.infrastructure.ControllableClock
 import i.herman.infrastructure.ControllableIdGenerator
@@ -17,10 +18,11 @@ class CreateAPostTest {
     fun aPostIsCreated() {
         val postText = "First Post"
         val post = Post("postId", "userId", postText, 1L)
+        val userData = InMemoryUserData("userId")
+        val clock = ControllableClock(1L)
+        val idGenerator = ControllableIdGenerator("postId")
         val viewModel = CreatePostViewModel(
-            InMemoryUserData("userId"),
-            ControllableClock(1L),
-            ControllableIdGenerator("postId")
+            PostRepository(userData, clock, idGenerator)
         )
 
         viewModel.createPost(postText)
@@ -32,10 +34,11 @@ class CreateAPostTest {
     fun anotherPostCreated() {
         val postText = "Second Post"
         val anotherPost = Post("postId2", "userId", postText, 2L)
+        val userData = InMemoryUserData("userId")
+        val clock = ControllableClock(2L)
+        val idGenerator = ControllableIdGenerator("postId2")
         val viewModel = CreatePostViewModel(
-            InMemoryUserData("userId"),
-            ControllableClock(2L),
-            ControllableIdGenerator("postId2")
+            PostRepository(userData, clock, idGenerator)
         )
 
         viewModel.createPost(postText)
