@@ -1,9 +1,9 @@
 package i.herman.postcomposer
 
+import com.ihermandev.sharedtest.domain.post.OfflinePostCatalog
+import com.ihermandev.sharedtest.domain.post.UnavailablePostCatalog
 import i.herman.InstantTaskExecutorExtension
-import i.herman.domain.post.OfflinePostCatalog
 import i.herman.domain.post.PostRepository
-import i.herman.domain.post.UnavailablePostCatalog
 import i.herman.domain.user.InMemoryUserData
 import i.herman.postcomposer.state.CreatePostState
 import org.junit.jupiter.api.Assertions.assertEquals

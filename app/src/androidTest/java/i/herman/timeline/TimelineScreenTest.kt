@@ -1,16 +1,14 @@
 package i.herman.timeline
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import com.ihermandev.sharedtest.domain.post.OfflinePostCatalog
+import com.ihermandev.sharedtest.domain.post.UnavailablePostCatalog
 import i.herman.MainActivity
-import i.herman.domain.exceptions.BackendException
-import i.herman.domain.exceptions.ConnectionUnavailableException
-import i.herman.domain.post.InMemoryPostCatalog
-import i.herman.domain.post.Post
-import i.herman.domain.post.PostCatalog
+import i.herman.domain.post.*
 import kotlinx.coroutines.delay
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
-import org.junit.After
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
 
@@ -107,23 +105,4 @@ class TimelineScreenTest {
         }
     }
 
-    class UnavailablePostCatalog : PostCatalog {
-        override fun addPost(userId: String, postText: String): Post {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun postsFor(userIds: List<String>): List<Post> {
-            throw BackendException()
-        }
-    }
-
-    class OfflinePostCatalog : PostCatalog {
-        override fun addPost(userId: String, postText: String): Post {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun postsFor(userIds: List<String>): List<Post> {
-            throw ConnectionUnavailableException()
-        }
-    }
 }

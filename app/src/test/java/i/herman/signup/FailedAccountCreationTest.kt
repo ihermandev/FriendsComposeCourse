@@ -1,7 +1,7 @@
 package i.herman.signup
 
-import i.herman.domain.user.OfflineUserCatalog
-import i.herman.domain.user.UnavailableUserCatalog
+import com.ihermandev.sharedtest.domain.user.OfflineUserCatalog
+import com.ihermandev.sharedtest.domain.user.UnavailableUserCatalog
 import i.herman.domain.user.UserRepository
 import i.herman.signup.state.SignUpState
 import kotlinx.coroutines.runBlocking

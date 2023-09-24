@@ -1,9 +1,9 @@
 package i.herman.timeline
 
+import com.ihermandev.sharedtest.domain.post.OfflinePostCatalog
+import com.ihermandev.sharedtest.domain.post.UnavailablePostCatalog
 import i.herman.InstantTaskExecutorExtension
 import i.herman.app.TestDispatchers
-import i.herman.domain.post.OfflinePostCatalog
-import i.herman.domain.post.UnavailablePostCatalog
 import i.herman.domain.timeline.TimelineRepository
 import i.herman.domain.user.InMemoryUserCatalog
 import i.herman.timeline.state.TimelineState

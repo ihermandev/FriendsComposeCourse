@@ -1,13 +1,11 @@
 package i.herman.signup
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import com.ihermandev.sharedtest.domain.user.OfflineUserCatalog
+import com.ihermandev.sharedtest.domain.user.UnavailableUserCatalog
 import i.herman.MainActivity
-import i.herman.domain.exceptions.BackendException
-import i.herman.domain.exceptions.ConnectionUnavailableException
-import i.herman.domain.user.InMemoryUserCatalog
-import i.herman.domain.user.User
+import i.herman.domain.user.*
 import kotlinx.coroutines.delay
-import i.herman.domain.user.UserCatalog
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -157,28 +155,6 @@ class SignUpScreenTest {
         override suspend fun createUser(email: String, password: String, about: String): User {
             delay(1000)
             return User("someId", email, about)
-        }
-
-        override fun followedBy(userId: String): List<String> {
-            TODO("Not yet implemented")
-        }
-    }
-
-    class UnavailableUserCatalog : UserCatalog {
-
-        override suspend fun createUser(email: String, password: String, about: String): User {
-            throw BackendException()
-        }
-
-        override fun followedBy(userId: String): List<String> {
-            TODO("Not yet implemented")
-        }
-    }
-
-    class OfflineUserCatalog : UserCatalog {
-
-        override suspend fun createUser(email: String, password: String, about: String): User {
-            throw ConnectionUnavailableException()
         }
 
         override fun followedBy(userId: String): List<String> {

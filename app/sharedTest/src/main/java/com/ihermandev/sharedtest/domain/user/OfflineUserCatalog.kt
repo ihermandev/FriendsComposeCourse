@@ -1,6 +1,8 @@
-package i.herman.domain.user
+package com.ihermandev.sharedtest.domain.user
 
 import i.herman.domain.exceptions.ConnectionUnavailableException
+import i.herman.domain.user.User
+import i.herman.domain.user.UserCatalog
 
 class OfflineUserCatalog : UserCatalog {
 

@@ -1,6 +1,8 @@
-package i.herman.domain.user
+package com.ihermandev.sharedtest.domain.user
 
 import i.herman.domain.exceptions.BackendException
+import i.herman.domain.user.User
+import i.herman.domain.user.UserCatalog
 
 class UnavailableUserCatalog : UserCatalog {
 

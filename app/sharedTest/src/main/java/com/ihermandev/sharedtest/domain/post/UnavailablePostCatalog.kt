@@ -1,6 +1,8 @@
-package i.herman.domain.post
+package com.ihermandev.sharedtest.domain.post
 
 import i.herman.domain.exceptions.BackendException
+import i.herman.domain.post.Post
+import i.herman.domain.post.PostCatalog
 
 class UnavailablePostCatalog : PostCatalog {
 

@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace 'i.herman'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "i.herman"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 2
         versionName "1.0"
 
@@ -39,17 +39,6 @@ android {
         useJUnitPlatform()
         testLogging {
             events 'passed', 'failed', 'skipped', 'standardOut', 'standardError'
-        }
-    }
-
-    sourceSets {
-        def sharedTestDirectory = "src/sharedTest/java"
-        test {
-            java.srcDir sharedTestDirectory
-        }
-
-        androidTest {
-            java.srcDir sharedTestDirectory
         }
     }
 
@@ -89,7 +78,9 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.1"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation(project(":app:sharedTest"))
 
+    androidTestImplementation(project(":app:sharedTest"))
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
