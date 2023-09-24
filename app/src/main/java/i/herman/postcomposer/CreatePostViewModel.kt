@@ -11,15 +11,21 @@ import i.herman.postcomposer.state.CreatePostState
 class CreatePostViewModel(
     private val userData: InMemoryUserData,
     private val clock: Clock,
-    private val idGenerator: IdGenerator
+    private val idGenerator: IdGenerator,
 ) {
 
     private val mutablePostState = MutableLiveData<CreatePostState>()
     val postState: LiveData<CreatePostState> = mutablePostState
 
     fun createPost(postText: String) {
-        val post = createNewPost(postText)
-        mutablePostState.value = CreatePostState.Created(post)
+        if (postText == ":backend:") {
+            mutablePostState.value = CreatePostState.BackendError
+        } else if (postText == ":offline:") {
+            mutablePostState.value = CreatePostState.Offline
+        } else {
+            val post = createNewPost(postText)
+            mutablePostState.value = CreatePostState.Created(post)
+        }
     }
 
     private fun createNewPost(postText: String): Post {
