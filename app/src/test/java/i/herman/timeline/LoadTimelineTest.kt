@@ -1,6 +1,7 @@
 package i.herman.timeline
 
 import i.herman.InstantTaskExecutorExtension
+import i.herman.app.TestDispatchers
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.Post
 import i.herman.domain.timeline.TimelineRepository
@@ -40,7 +41,8 @@ class LoadTimelineTest {
         val userCatalog = InMemoryUserCatalog()
         val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
-            TimelineRepository(userCatalog, postCatalog)
+            TimelineRepository(userCatalog, postCatalog),
+            TestDispatchers()
         )
 
         viewModel.timelineFor("tomId")
@@ -53,7 +55,8 @@ class LoadTimelineTest {
         val userCatalog = InMemoryUserCatalog()
         val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
-            TimelineRepository(userCatalog, postCatalog)
+            TimelineRepository(userCatalog, postCatalog),
+            TestDispatchers()
         )
 
         viewModel.timelineFor(tim.id)
@@ -70,7 +73,8 @@ class LoadTimelineTest {
         )
         val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
-            TimelineRepository(userCatalog, postCatalog)
+            TimelineRepository(userCatalog, postCatalog),
+            TestDispatchers()
         )
 
         viewModel.timelineFor(anna.id)
@@ -87,7 +91,8 @@ class LoadTimelineTest {
         )
         val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
-            TimelineRepository(userCatalog, postCatalog)
+            TimelineRepository(userCatalog, postCatalog),
+            TestDispatchers()
         )
 
         viewModel.timelineFor(sara.id)

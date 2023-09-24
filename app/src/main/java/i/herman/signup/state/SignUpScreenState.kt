@@ -8,25 +8,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SignUpScreenState(
-    private val coroutineScope: CoroutineScope
-) {
+class SignUpScreenState {
     var email by mutableStateOf("")
     var isBadEmail by mutableStateOf(false)
     var password by mutableStateOf("")
     var isBadPassword by mutableStateOf(false)
     var about by mutableStateOf("")
     var currentInfoMessage by mutableStateOf(0)
-    var isInfoMessageShowing by mutableStateOf(false)
     var isLoading by mutableStateOf(false)
-
 
     private var lastSubmittedEmail by mutableStateOf("")
     private var lastSubmittedPassword by mutableStateOf("")
 
     val showBadEmail: Boolean
         get() = isBadEmail && lastSubmittedEmail == email
-
 
     val showBadPassword: Boolean
         get() = isBadPassword && lastSubmittedPassword == password
@@ -39,15 +34,10 @@ class SignUpScreenState(
         isBadPassword = true
     }
 
-    fun toggleInfoMessage(@StringRes message: Int) = coroutineScope.launch {
+    fun toggleInfoMessage(@StringRes message: Int) {
         isLoading = false
         if (currentInfoMessage != message) {
             currentInfoMessage = message
-            if (!isInfoMessageShowing) {
-                isInfoMessageShowing = true
-                delay(1500)
-                isInfoMessageShowing = false
-            }
         }
     }
 
@@ -59,7 +49,6 @@ class SignUpScreenState(
         currentInfoMessage = 0
         lastSubmittedEmail = email
         lastSubmittedPassword = password
-        isInfoMessageShowing = false
         isBadEmail = false
         isBadPassword = false
         isLoading = false

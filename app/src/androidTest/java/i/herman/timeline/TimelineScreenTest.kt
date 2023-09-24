@@ -2,9 +2,12 @@ package i.herman.timeline
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import i.herman.MainActivity
+import i.herman.domain.exceptions.BackendException
+import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.Post
 import i.herman.domain.post.PostCatalog
+import kotlinx.coroutines.delay
 import org.junit.Rule
 import org.junit.Test
 import org.junit.After
@@ -36,7 +39,6 @@ class TimelineScreenTest {
         replacePostCatalogWith(InMemoryPostCatalog(listOf(post1, post2)))
 
         launchTimelineFor(email, password, timelineTestRule) {
-
             //no operation
         } verify {
             postsAreDisplayed(post1, post2)
@@ -52,6 +54,36 @@ class TimelineScreenTest {
         }
     }
 
+    @Test
+    fun showsLoadingIndicator() {
+        replacePostCatalogWith(DelayingPostsCatalog())
+        launchTimelineFor("testLoading@email.com", "sOmEPa$123", timelineTestRule) {
+            //no operation
+        } verify {
+            loadingIndicatorIsDisplayed()
+        }
+    }
+
+    @Test
+    fun showsBackendError() {
+        replacePostCatalogWith(UnavailablePostCatalog())
+        launchTimelineFor("backendError@friends.com", "sOmEPa$123", timelineTestRule) {
+            //no operation
+        } verify {
+            backendErrorIsDisplayed()
+        }
+    }
+
+    @Test
+    fun showsOfflineError() {
+        replacePostCatalogWith(OfflinePostCatalog())
+        launchTimelineFor("offlineError@friends.com", "sOmEPa$123", timelineTestRule) {
+            //no operation
+        } verify {
+            offlineErrorIsDisplayed()
+        }
+    }
+
     @After
     fun tearDown() {
         replacePostCatalogWith(InMemoryPostCatalog())
@@ -62,5 +94,27 @@ class TimelineScreenTest {
             factory(override = true) { postsCatalog }
         }
         loadKoinModules(replaceModule)
+    }
+
+    class DelayingPostsCatalog : PostCatalog {
+
+        override suspend fun postsFor(userIds: List<String>): List<Post> {
+            delay(2000)
+            return emptyList()
+        }
+    }
+
+    class UnavailablePostCatalog : PostCatalog {
+
+        override suspend fun postsFor(userIds: List<String>): List<Post> {
+            throw BackendException()
+        }
+    }
+
+    class OfflinePostCatalog : PostCatalog {
+
+        override suspend fun postsFor(userIds: List<String>): List<Post> {
+            throw ConnectionUnavailableException()
+        }
     }
 }

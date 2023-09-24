@@ -1,6 +1,7 @@
 package i.herman.timeline
 
 import i.herman.InstantTaskExecutorExtension
+import i.herman.app.TestDispatchers
 import i.herman.domain.exceptions.BackendException
 import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.domain.post.Post
@@ -20,7 +21,8 @@ class FailTimelineLoadingTest {
         val userCatalog = InMemoryUserCatalog()
         val postCatalog = UnavailablePostCatalog()
         val viewModel = TimelineViewModel(
-            TimelineRepository(userCatalog, postCatalog)
+            TimelineRepository(userCatalog, postCatalog),
+            TestDispatchers()
         )
 
         viewModel.timelineFor(":irrelevant:")
@@ -33,7 +35,8 @@ class FailTimelineLoadingTest {
         val userCatalog = InMemoryUserCatalog()
         val postCatalog = OfflinePostCatalog()
         val viewModel = TimelineViewModel(
-            TimelineRepository(userCatalog, postCatalog)
+            TimelineRepository(userCatalog, postCatalog),
+            TestDispatchers()
         )
 
         viewModel.timelineFor(":irrelevant:")
@@ -42,13 +45,13 @@ class FailTimelineLoadingTest {
     }
 
     private class UnavailablePostCatalog : PostCatalog {
-        override fun postsFor(userIds: List<String>): List<Post> {
+        override suspend fun postsFor(userIds: List<String>): List<Post> {
             throw BackendException()
         }
     }
 
     private class OfflinePostCatalog : PostCatalog {
-        override fun postsFor(userIds: List<String>): List<Post> {
+        override suspend fun postsFor(userIds: List<String>): List<Post> {
             throw ConnectionUnavailableException()
         }
     }

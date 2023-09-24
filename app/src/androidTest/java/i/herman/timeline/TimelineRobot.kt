@@ -17,7 +17,7 @@ fun launchTimelineFor(
     email: String,
     password: String,
     timelineTestRule: MainActivityRule,
-    block: TimelineRobot.() -> Unit
+    block: TimelineRobot.() -> Unit,
 ): TimelineRobot {
     launchSignUpScreen(timelineTestRule) {
         typeEmail(email)
@@ -28,7 +28,7 @@ fun launchTimelineFor(
 }
 
 class TimelineRobot(
-    private val rule: MainActivityRule
+    private val rule: MainActivityRule,
 ) {
 
     fun tapOnCreateNewPost() {
@@ -38,14 +38,14 @@ class TimelineRobot(
     }
 
     infix fun verify(
-        block: TimelineVerificationRobot.() -> Unit
+        block: TimelineVerificationRobot.() -> Unit,
     ): TimelineVerificationRobot {
         return TimelineVerificationRobot(rule).apply(block)
     }
 }
 
 class TimelineVerificationRobot(
-    private val rule: MainActivityRule
+    private val rule: MainActivityRule,
 ) {
 
     fun emptyTimelineMessageIsDisplayed() {
@@ -64,6 +64,24 @@ class TimelineVerificationRobot(
     fun newPostComposerIsDisplayed() {
         val createNewPost = rule.activity.getString(R.string.createNewPost)
         rule.onNodeWithText(createNewPost)
+            .assertIsDisplayed()
+    }
+
+    fun loadingIndicatorIsDisplayed() {
+        val loading = rule.activity.getString(R.string.loading)
+        rule.onNodeWithTag(loading)
+            .assertIsDisplayed()
+    }
+
+    fun backendErrorIsDisplayed() {
+        val errorMessage = rule.activity.getString(R.string.fetchingTimelineError)
+        rule.onNodeWithText(errorMessage)
+            .assertIsDisplayed()
+    }
+
+    fun offlineErrorIsDisplayed() {
+        val offline = rule.activity.getString(R.string.offlineError)
+        rule.onNodeWithText(offline)
             .assertIsDisplayed()
     }
 }

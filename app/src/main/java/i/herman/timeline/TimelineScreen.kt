@@ -31,61 +31,73 @@ import i.herman.domain.post.Post
 import i.herman.timeline.state.TimelineState
 import i.herman.ui.composables.ScreenTitle
 import i.herman.R
-
-class TimelineScreenState {
-    var posts by mutableStateOf(emptyList<Post>())
-
-    fun updatePosts(newPosts: List<Post>) {
-        this.posts = newPosts
-    }
-}
+import i.herman.timeline.state.TimelineScreenState
+import i.herman.ui.composables.BlockingLoading
+import i.herman.ui.composables.InfoMessage
 
 @Composable
 fun TimelineScreen(
     userId: String,
     timelineViewModel: TimelineViewModel,
-    onCreateNewPost: () -> Unit
+    onCreateNewPost: () -> Unit,
 ) {
     val screenState by remember { mutableStateOf(TimelineScreenState()) }
     val timelineState by timelineViewModel.timelineState.observeAsState()
-    timelineViewModel.timelineFor(userId)
-
-    if (timelineState is TimelineState.Posts) {
-        val posts = (timelineState as TimelineState.Posts).posts
-        screenState.updatePosts(posts)
+    if (screenState.shouldLoadPostsFor(userId)) {
+        timelineViewModel.timelineFor(userId)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        ScreenTitle(resource = R.string.timeline)
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(modifier = Modifier.fillMaxSize()) {
-            PostsList(
-                posts = screenState.posts,
-                modifier = Modifier.align(Alignment.TopCenter)
-            )
-            FloatingActionButton(
-                onClick = { onCreateNewPost() },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .testTag(stringResource(id = R.string.createNewPost))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.createNewPost)
+    when (timelineState) {
+        is TimelineState.Loading -> screenState.showLoading()
+        is TimelineState.Posts -> {
+            val posts = (timelineState as TimelineState.Posts).posts
+            screenState.updatePosts(posts)
+        }
+
+        is TimelineState.BackendError -> {
+            screenState.showInfoMessage(R.string.fetchingTimelineError)
+        }
+
+        is TimelineState.OfflineError -> {
+            screenState.showInfoMessage(R.string.offlineError)
+        }
+    }
+
+    Box {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            ScreenTitle(resource = R.string.timeline)
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(modifier = Modifier.fillMaxSize()) {
+                PostsList(
+                    posts = screenState.posts,
+                    modifier = Modifier.align(Alignment.TopCenter)
                 )
+                FloatingActionButton(
+                    onClick = { onCreateNewPost() },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .testTag(stringResource(id = R.string.createNewPost))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.createNewPost)
+                    )
+                }
             }
         }
+        InfoMessage(stringResource = screenState.currentInfoMessage)
+        BlockingLoading(isShowing = screenState.isLoading)
     }
 }
 
 @Composable
 private fun PostsList(
     posts: List<Post>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (posts.isEmpty()) {
         Text(
@@ -105,7 +117,7 @@ private fun PostsList(
 @Composable
 fun PostItem(
     post: Post,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
