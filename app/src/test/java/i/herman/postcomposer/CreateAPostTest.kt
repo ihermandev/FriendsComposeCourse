@@ -6,7 +6,7 @@ import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.Post
 import i.herman.domain.post.PostRepository
 import i.herman.domain.user.InMemoryUserData
-import i.herman.infrastructure.ControllableClock
+import com.ihermandev.sharedtest.infrastructure.ControllableClock
 import i.herman.infrastructure.ControllableIdGenerator
 import i.herman.postcomposer.state.CreatePostState
 import org.junit.jupiter.api.Assertions.assertEquals

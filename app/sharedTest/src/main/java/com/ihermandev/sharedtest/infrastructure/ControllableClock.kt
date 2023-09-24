@@ -1,4 +1,6 @@
-package i.herman.infrastructure
+package com.ihermandev.sharedtest.infrastructure
+
+import i.herman.infrastructure.Clock
 
 class ControllableClock(
     private val timestamp: Long
