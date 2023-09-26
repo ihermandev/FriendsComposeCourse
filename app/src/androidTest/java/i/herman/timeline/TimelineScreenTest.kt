@@ -1,6 +1,7 @@
 package i.herman.timeline
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import com.ihermandev.sharedtest.domain.post.DelayingPostsCatalog
 import com.ihermandev.sharedtest.domain.post.OfflinePostCatalog
 import com.ihermandev.sharedtest.domain.post.UnavailablePostCatalog
 import i.herman.MainActivity
@@ -92,17 +93,6 @@ class TimelineScreenTest {
             factory(override = true) { postsCatalog }
         }
         loadKoinModules(replaceModule)
-    }
-
-    class DelayingPostsCatalog : PostCatalog {
-        override suspend fun addPost(userId: String, postText: String): Post {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun postsFor(userIds: List<String>): List<Post> {
-            delay(2000)
-            return emptyList()
-        }
     }
 
 }

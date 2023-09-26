@@ -1,5 +1,6 @@
 package i.herman.postcomposer
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,14 +24,9 @@ import androidx.compose.ui.unit.dp
 import i.herman.postcomposer.state.CreatePostState
 import i.herman.ui.composables.ScreenTitle
 import i.herman.R
-
-class CreateNewPostScreenState {
-    var isPostSubmitted by mutableStateOf(false)
-
-    fun setPostSubmitted() {
-        isPostSubmitted = true
-    }
-}
+import i.herman.postcomposer.state.CreateNewPostScreenState
+import i.herman.ui.composables.BlockingLoading
+import i.herman.ui.composables.InfoMessage
 
 @Composable
 fun CreateNewPostScreen(
@@ -42,38 +38,49 @@ fun CreateNewPostScreen(
     var postText by remember { mutableStateOf("") }
 
     val createPostState by createPostViewModel.postState.observeAsState()
+
     when (createPostState) {
+        is CreatePostState.Loading ->
+            screenState.showLoading()
         is CreatePostState.Created -> {
             if (screenState.isPostSubmitted) {
                 onPostCreated()
             }
         }
+        is CreatePostState.BackendError ->
+            screenState.showMessage(R.string.creatingPostError)
+        is CreatePostState.Offline ->
+            screenState.showMessage(R.string.offlineError)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        ScreenTitle(resource = R.string.createNewPost)
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(modifier = Modifier.fillMaxSize()) {
-            PostComposer(postText) { postText = it }
-            FloatingActionButton(
-                onClick = {
-                    screenState.setPostSubmitted()
-                    createPostViewModel.createPost(postText)
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .testTag(stringResource(id = R.string.submitPost))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Done,
-                    contentDescription = stringResource(id = R.string.submitPost)
-                )
+    Box {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            ScreenTitle(resource = R.string.createNewPost)
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(modifier = Modifier.fillMaxSize()) {
+                PostComposer(postText) { postText = it }
+                FloatingActionButton(
+                    onClick = {
+                        screenState.setPostSubmitted()
+                        createPostViewModel.createPost(postText)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .testTag(stringResource(id = R.string.submitPost))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Done,
+                        contentDescription = stringResource(id = R.string.submitPost)
+                    )
+                }
             }
         }
+        InfoMessage(stringResource = screenState.currentMessage)
+        BlockingLoading(isShowing = screenState.isLoading)
     }
 }
 

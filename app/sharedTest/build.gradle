@@ -24,4 +24,6 @@ android {
 
 dependencies {
     implementation(project(":app"))
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
 }

@@ -35,6 +35,7 @@ import i.herman.R
 import i.herman.timeline.state.TimelineScreenState
 import i.herman.ui.composables.BlockingLoading
 import i.herman.ui.composables.InfoMessage
+import i.herman.ui.extensions.toDateTime
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -147,11 +148,6 @@ fun PostItem(
             )
         }
     }
-}
-
-private fun Long.toDateTime(): String {
-    val dateTimeFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.US)
-    return dateTimeFormat.format(this)
 }
 
 @Preview
