@@ -45,7 +45,11 @@ fun SignUpScreen(
 
     when (signUpState) {
         is SignUpState.Loading -> screenState.toggleLoading()
-        is SignUpState.SignedUp -> onSignedUp((signUpState as SignUpState.SignedUp).user.id)
+        is SignUpState.SignedUp -> {
+            val signedUpUserId = (signUpState as SignUpState.SignedUp).user.id
+            screenState.setSignedUpUser(signedUpUserId)
+            onSignedUp(signedUpUserId)
+        }
         is SignUpState.InvalidEmail -> screenState.showBadEmail()
         is SignUpState.InvalidPassword -> screenState.showBadPassword()
         is SignUpState.DuplicateAccount -> screenState.toggleInfoMessage(R.string.duplicateAccountError)

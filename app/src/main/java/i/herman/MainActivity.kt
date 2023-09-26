@@ -5,48 +5,41 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import i.herman.postcomposer.CreateNewPostScreen
+import i.herman.home.HomeScreen
+import i.herman.navigation.Screen
 import i.herman.signup.SignUpScreen
-import i.herman.timeline.TimelineScreen
 import i.herman.ui.theme.FriendsComposeCourseTheme
 
 class MainActivity : ComponentActivity() {
 
-    private companion object {
-        private const val SIGN_UP = "signUp"
-        private const val TIMELINE = "timeline"
-        private const val CREATE_NEW_POST = "createNewPost"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
             FriendsComposeCourseTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    NavHost(navController = navController, startDestination = SIGN_UP) {
-                        composable(SIGN_UP) {
-                            SignUpScreen { signedUpUserId ->
-                                navController.navigate("$TIMELINE/$signedUpUserId") {
-                                    popUpTo(SIGN_UP) { inclusive = true }
-                                }
-                            }
-                        }
-                        composable(route = "$TIMELINE/{userId}") { backStackEntry ->
-                            TimelineScreen(
-                                userId = backStackEntry.arguments?.getString("userId") ?: ""
-                            ) { navController.navigate(CREATE_NEW_POST) }
-                        }
-                        composable(CREATE_NEW_POST) {
-                            CreateNewPostScreen {
-                                navController.navigateUp()
-                            }
-                        }
+                    MainApp()
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun MainApp() {
+        val navController = rememberNavController()
+        NavHost(navController = navController, startDestination = Screen.SignUp.route) {
+            composable(Screen.SignUp.route) {
+                SignUpScreen { signedUpUserId ->
+                    navController.navigate(Screen.Home.createRoute(signedUpUserId)) {
+                        popUpTo(Screen.SignUp.route) { inclusive = true }
                     }
                 }
+            }
+            composable(route = Screen.Home.route) { backStackEntry ->
+                HomeScreen(userId = backStackEntry.arguments?.getString(Screen.Home.userId) ?: "")
             }
         }
     }
