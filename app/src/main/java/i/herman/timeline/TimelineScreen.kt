@@ -1,9 +1,10 @@
 package i.herman.timeline
 
-
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,12 +35,14 @@ import i.herman.R
 import i.herman.timeline.state.TimelineScreenState
 import i.herman.ui.composables.BlockingLoading
 import i.herman.ui.composables.InfoMessage
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun TimelineScreen(
     userId: String,
     timelineViewModel: TimelineViewModel,
-    onCreateNewPost: () -> Unit,
+    onCreateNewPost: () -> Unit
 ) {
     val screenState by remember { mutableStateOf(TimelineScreenState()) }
     val timelineState by timelineViewModel.timelineState.observeAsState()
@@ -53,14 +56,10 @@ fun TimelineScreen(
             val posts = (timelineState as TimelineState.Posts).posts
             screenState.updatePosts(posts)
         }
-
-        is TimelineState.BackendError -> {
+        is TimelineState.BackendError ->
             screenState.showInfoMessage(R.string.fetchingTimelineError)
-        }
-
-        is TimelineState.OfflineError -> {
+        is TimelineState.OfflineError ->
             screenState.showInfoMessage(R.string.offlineError)
-        }
     }
 
     Box {
@@ -97,7 +96,7 @@ fun TimelineScreen(
 @Composable
 private fun PostsList(
     posts: List<Post>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     if (posts.isEmpty()) {
         Text(
@@ -117,7 +116,7 @@ private fun PostsList(
 @Composable
 fun PostItem(
     post: Post,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
@@ -129,11 +128,30 @@ fun PostItem(
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
-        Text(
-            text = post.text,
-            modifier = Modifier.padding(16.dp)
-        )
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = post.userId)
+                Text(text = post.timestamp.toDateTime())
+            }
+            Text(
+                text = post.text,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
+}
+
+private fun Long.toDateTime(): String {
+    val dateTimeFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.US)
+    return dateTimeFormat.format(this)
 }
 
 @Preview
