@@ -20,7 +20,7 @@ class SignUpScreenTest {
     val signUpTestRule = createAndroidComposeRule<MainActivity>()
 
     private val signUpModule = module {
-        factory<UserCatalog>(override = true) { InMemoryUserCatalog() }
+        factory<UserCatalog> { InMemoryUserCatalog() }
     }
 
     @Before
@@ -145,7 +145,7 @@ class SignUpScreenTest {
 
     private fun replaceUserCatalogWith(userCatalog: UserCatalog) {
         val replaceModule = module {
-            factory(override = true) { userCatalog }
+            factory { userCatalog }
         }
         loadKoinModules(replaceModule)
     }

@@ -100,14 +100,14 @@ class CreateNewPostScreenTest {
 
     private fun replacePostCatalogWith(postCatalog: PostCatalog) {
         val module = module {
-            single(override = true) { postCatalog }
+            single { postCatalog }
         }
         loadKoinModules(module)
     }
 
     private fun replaceUserDataWith(userData: InMemoryUserData) {
         val module = module {
-            single(override = true) { userData }
+            single { userData }
         }
         loadKoinModules(module)
     }

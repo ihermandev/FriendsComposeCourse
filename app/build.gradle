@@ -70,8 +70,8 @@ dependencies {
     implementation 'androidx.compose.material:material:1.1.1'
     implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
     implementation "androidx.navigation:navigation-compose:2.4.0-alpha04"
-    implementation "io.insert-koin:koin-core:3.0.1"
-    implementation "io.insert-koin:koin-android:3.0.1"
+    implementation "io.insert-koin:koin-core:$koinVersion"
+    implementation "io.insert-koin:koin-android:$koinVersion"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.1"
     testImplementation "org.junit.jupiter:junit-jupiter-params:5.9.1"
