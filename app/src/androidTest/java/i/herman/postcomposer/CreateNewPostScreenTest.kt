@@ -8,7 +8,7 @@ import com.ihermandev.sharedtest.infrastructure.ControllableClock
 import i.herman.MainActivity
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.PostCatalog
-import i.herman.domain.user.InMemoryUserData
+import i.herman.domain.user.InMemoryUserDataStore
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +28,6 @@ class CreateNewPostScreenTest {
 
     @Test
     fun createNewPost() {
-        replaceUserDataWith(InMemoryUserData("jovmitId"))
         replacePostCatalogWith(InMemoryPostCatalog(clock = ControllableClock(timestamp)))
 
         launchPostComposerFor("jovmit@friends.com", createNewPostRule) {
@@ -41,7 +40,6 @@ class CreateNewPostScreenTest {
 
     @Test
     fun createMultiplePost() {
-        replaceUserDataWith(InMemoryUserData("jovmitId"))
         replacePostCatalogWith(InMemoryPostCatalog(clock = ControllableClock(timestamp)))
 
         launchPostComposerFor("jovmit@fiends.com", createNewPostRule) {
@@ -95,7 +93,7 @@ class CreateNewPostScreenTest {
     @After
     fun tearDown() {
         replacePostCatalogWith(InMemoryPostCatalog())
-        replaceUserDataWith(InMemoryUserData(""))
+        replaceUserDataWith(InMemoryUserDataStore())
     }
 
     private fun replacePostCatalogWith(postCatalog: PostCatalog) {
@@ -105,9 +103,9 @@ class CreateNewPostScreenTest {
         loadKoinModules(module)
     }
 
-    private fun replaceUserDataWith(userData: InMemoryUserData) {
+    private fun replaceUserDataWith(userDataStore: InMemoryUserDataStore) {
         val module = module {
-            single { userData }
+            single { userDataStore }
         }
         loadKoinModules(module)
     }

@@ -5,7 +5,7 @@ import i.herman.app.TestDispatchers
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.Post
 import i.herman.domain.post.PostRepository
-import i.herman.domain.user.InMemoryUserData
+import i.herman.domain.user.InMemoryUserDataStore
 import com.ihermandev.sharedtest.infrastructure.ControllableClock
 import i.herman.infrastructure.ControllableIdGenerator
 import i.herman.postcomposer.state.CreatePostState
@@ -25,7 +25,7 @@ class RenderingCreatePostStatesTest {
     private val idGenerator = ControllableIdGenerator(postId)
     private val clock = ControllableClock(timestamp)
     private val postCatalog = InMemoryPostCatalog(idGenerator = idGenerator, clock = clock)
-    private val userData = InMemoryUserData(loggedInUserId)
+    private val userData = InMemoryUserDataStore(loggedInUserId)
     private val postRepository = PostRepository(userData, postCatalog)
     private val dispatchers = TestDispatchers()
     private val viewModel = CreatePostViewModel(postRepository, dispatchers)

@@ -5,15 +5,19 @@ import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.domain.exceptions.DuplicateAccountException
 import i.herman.signup.state.SignUpState
 
-class UserRepository(private val usersCatalog: UserCatalog) {
+class UserRepository(
+    private val userCatalog: UserCatalog,
+    private val userDataStore: UserDataStore
+) {
 
     suspend fun signUp(
         email: String,
-        about: String,
         password: String,
+        about: String
     ): SignUpState {
         return try {
-            val user = usersCatalog.createUser(email, about, password)
+            val user = userCatalog.createUser(email, password, about)
+            userDataStore.storeLoggedInUserId(user.id)
             SignUpState.SignedUp(user)
         } catch (duplicateAccount: DuplicateAccountException) {
             SignUpState.DuplicateAccount
@@ -22,6 +26,5 @@ class UserRepository(private val usersCatalog: UserCatalog) {
         } catch (offlineException: ConnectionUnavailableException) {
             SignUpState.Offline
         }
-
     }
 }

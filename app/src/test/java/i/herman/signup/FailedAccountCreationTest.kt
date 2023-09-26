@@ -2,6 +2,7 @@ package i.herman.signup
 
 import com.ihermandev.sharedtest.domain.user.OfflineUserCatalog
 import com.ihermandev.sharedtest.domain.user.UnavailableUserCatalog
+import i.herman.domain.user.InMemoryUserDataStore
 import i.herman.domain.user.UserRepository
 import i.herman.signup.state.SignUpState
 import kotlinx.coroutines.runBlocking
@@ -12,7 +13,7 @@ class FailedAccountCreationTest {
 
     @Test
     fun backendError() = runBlocking {
-        val userRepository = UserRepository(UnavailableUserCatalog())
+        val userRepository = UserRepository(UnavailableUserCatalog(), InMemoryUserDataStore())
 
         val result = userRepository.signUp(":email:", ":password:", ":about:")
 
@@ -21,7 +22,7 @@ class FailedAccountCreationTest {
 
     @Test
     fun offlineError() = runBlocking {
-        val userRepository = UserRepository(OfflineUserCatalog())
+        val userRepository = UserRepository(OfflineUserCatalog(), InMemoryUserDataStore())
 
         val result = userRepository.signUp(":email:", ":password:", ":about:")
 

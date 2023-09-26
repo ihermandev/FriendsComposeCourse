@@ -3,6 +3,7 @@ package i.herman.signup
 import i.herman.InstantTaskExecutorExtension
 import i.herman.app.TestDispatchers
 import i.herman.domain.user.InMemoryUserCatalog
+import i.herman.domain.user.InMemoryUserDataStore
 import i.herman.domain.user.UserRepository
 import i.herman.domain.validation.CredentialsValidationResult
 import i.herman.domain.validation.RegexCredentialsValidator
@@ -14,19 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 
 @ExtendWith(InstantTaskExecutorExtension::class)
-class CredentialValidationTest {
-
-    private val regexCredentialsValidator: RegexCredentialsValidator by lazy {
-        RegexCredentialsValidator()
-    }
-
-    private val inMemoryUserCatalog: InMemoryUserCatalog by lazy {
-        InMemoryUserCatalog()
-    }
-
-    private val userRepository: UserRepository by lazy {
-        UserRepository(inMemoryUserCatalog)
-    }
+class CredentialsValidationTest {
 
     @ParameterizedTest
     @CsvSource(
@@ -35,11 +24,14 @@ class CredentialValidationTest {
         "'ab@b.c'",
         "'ab@bc.c'",
         "''",
-        "'      '"
+        "'     '",
     )
     fun invalidEmail(email: String) {
-        val viewModel =
-            SignUpViewModel(regexCredentialsValidator, userRepository, TestDispatchers())
+        val viewModel = SignUpViewModel(
+            RegexCredentialsValidator(),
+            UserRepository(InMemoryUserCatalog(), InMemoryUserDataStore()),
+            TestDispatchers()
+        )
 
         viewModel.createAccount(email, ":password:", ":about:")
 
@@ -49,24 +41,30 @@ class CredentialValidationTest {
     @ParameterizedTest
     @CsvSource(
         "''",
-        "'    '",
-        "'123'",
-        "'1234'",
-        "'ABCDF'",
-        "'QWERTY'",
+        "'           '",
+        "'12345678'",
+        "'abcd5678'",
+        "'abcDEF78'",
+        "'abcdef78#$'",
+        "'ABCDEF78#$'",
     )
     fun invalidPassword(password: String) {
-        val viewModel =
-            SignUpViewModel(regexCredentialsValidator, userRepository, TestDispatchers())
+        val viewModel = SignUpViewModel(
+            RegexCredentialsValidator(),
+            UserRepository(InMemoryUserCatalog(), InMemoryUserDataStore()),
+            TestDispatchers()
+        )
 
-        viewModel.createAccount("ann@friends.com", password, ":about:")
+        viewModel.createAccount("anna@friends.com", password, ":about:")
 
         assertEquals(SignUpState.InvalidPassword, viewModel.signUpState.value)
     }
 
     @Test
     fun validCredentials() {
-        val result = regexCredentialsValidator.validate("ann@friends.com", "12ABcd3!^")
+        val validator = RegexCredentialsValidator()
+
+        val result = validator.validate("john@friends.com", "12ABcd3!^")
 
         assertEquals(CredentialsValidationResult.Valid, result)
     }

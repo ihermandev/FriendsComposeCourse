@@ -5,7 +5,7 @@ import i.herman.app.TestDispatchers
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.Post
 import i.herman.domain.post.PostRepository
-import i.herman.domain.user.InMemoryUserData
+import i.herman.domain.user.InMemoryUserDataStore
 import com.ihermandev.sharedtest.infrastructure.ControllableClock
 import i.herman.infrastructure.ControllableIdGenerator
 import i.herman.postcomposer.state.CreatePostState
@@ -20,7 +20,7 @@ class CreateAPostTest {
     fun aPostIsCreated() {
         val postText = "First Post"
         val post = Post("postId", "userId", postText, 1L)
-        val userData = InMemoryUserData("userId")
+        val userData = InMemoryUserDataStore("userId")
         val clock = ControllableClock(1L)
         val idGenerator = ControllableIdGenerator("postId")
         val viewModel = CreatePostViewModel(
@@ -42,7 +42,7 @@ class CreateAPostTest {
     fun anotherPostCreated() {
         val postText = "Second Post"
         val anotherPost = Post("postId2", "userId", postText, 2L)
-        val userData = InMemoryUserData("userId")
+        val userData = InMemoryUserDataStore("userId")
         val clock = ControllableClock(2L)
         val idGenerator = ControllableIdGenerator("postId2")
         val viewModel = CreatePostViewModel(
