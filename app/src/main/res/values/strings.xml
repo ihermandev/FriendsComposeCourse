@@ -19,6 +19,7 @@
     <string name="newPostHint">What\'s on your mind?</string>
     <string name="submitPost">Submit Post</string>
     <string name="creatingPostError">Cannot create a new post!</string>
+    <string name="people">People</string>
     <string name="friends">Friends</string>
     <string name="emptyFriendsMessage">There are no friends available yet :(</string>
     <string name="follow">Follow</string>
