@@ -36,15 +36,18 @@ import i.herman.timeline.state.TimelineScreenState
 import i.herman.ui.composables.BlockingLoading
 import i.herman.ui.composables.InfoMessage
 import i.herman.ui.extensions.toDateTime
+import org.koin.androidx.compose.getViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun TimelineScreen(
     userId: String,
-    timelineViewModel: TimelineViewModel,
     onCreateNewPost: () -> Unit
 ) {
+
+
+    val timelineViewModel = getViewModel<TimelineViewModel>()
     val screenState by remember { mutableStateOf(TimelineScreenState()) }
     val timelineState by timelineViewModel.timelineState.observeAsState()
     if (screenState.shouldLoadPostsFor(userId)) {

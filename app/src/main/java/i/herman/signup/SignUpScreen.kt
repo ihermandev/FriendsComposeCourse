@@ -31,14 +31,15 @@ import i.herman.signup.state.SignUpState
 import i.herman.ui.composables.BlockingLoading
 import i.herman.ui.composables.InfoMessage
 import i.herman.ui.composables.ScreenTitle
+import org.koin.androidx.compose.getViewModel
 
 
 @Composable
 fun SignUpScreen(
-    signUpViewModel: SignUpViewModel,
     onSignedUp: (String) -> Unit,
 ) {
 
+    val signUpViewModel = getViewModel<SignUpViewModel>()
     val screenState by remember { mutableStateOf(SignUpScreenState()) }
     val signUpState by signUpViewModel.signUpState.observeAsState()
 

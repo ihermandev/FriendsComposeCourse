@@ -27,13 +27,14 @@ import i.herman.R
 import i.herman.postcomposer.state.CreateNewPostScreenState
 import i.herman.ui.composables.BlockingLoading
 import i.herman.ui.composables.InfoMessage
+import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun CreateNewPostScreen(
-    createPostViewModel: CreatePostViewModel,
     onPostCreated: () -> Unit
 ) {
 
+    val createPostViewModel = getViewModel<CreatePostViewModel>()
     val screenState by remember { mutableStateOf(CreateNewPostScreenState()) }
     var postText by remember { mutableStateOf("") }
 
