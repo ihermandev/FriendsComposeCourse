@@ -6,10 +6,10 @@ import i.herman.people.PeopleState
 
 
 class PeopleRepository(
-    private val peopleCatalog: InMemoryPeopleCatalog
+    private val peopleCatalog: PeopleCatalog,
 ) {
 
-    fun loadPeopleFor(userId: String): PeopleState {
+    suspend fun loadPeopleFor(userId: String): PeopleState {
         return try {
             val peopleForUserId = peopleCatalog.loadPeopleFor(userId)
             PeopleState.Loaded(peopleForUserId)
