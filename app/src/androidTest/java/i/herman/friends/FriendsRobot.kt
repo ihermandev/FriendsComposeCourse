@@ -2,6 +2,7 @@ package i.herman.friends
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -55,13 +56,31 @@ class FriendsVerificationRobot(
         }
     }
 
-    fun friendInformationIsShownFor(friend: Friend) {
+    fun friendInformationIsDisplayedFor(friend: Friend) {
         val follow = rule.activity.getString(R.string.follow)
         rule.onNodeWithText(friend.user.id)
             .assertIsDisplayed()
         rule.onNodeWithText(friend.user.about)
             .assertIsDisplayed()
         rule.onNodeWithText(follow)
+            .assertIsDisplayed()
+    }
+
+    fun loadingIndicatorIsDisplayed() {
+        val loading = rule.activity.getString(R.string.loading)
+        rule.onNodeWithContentDescription(loading)
+            .assertIsDisplayed()
+    }
+
+    fun backendErrorIsDisplayed() {
+        val errorMessage = rule.activity.getString(R.string.fetchingFriendsError)
+        rule.onNodeWithText(errorMessage)
+            .assertIsDisplayed()
+    }
+
+    fun offlineErrorIsDisplayed() {
+        val offlineError = rule.activity.getString(R.string.offlineError)
+        rule.onNodeWithText(offlineError)
             .assertIsDisplayed()
     }
 }
