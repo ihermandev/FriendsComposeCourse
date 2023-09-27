@@ -25,6 +25,7 @@
 ### Folks
 - find friends
 - follow friends
+- follow/unfollow friends
 
 ### Friends
 - see friends
