@@ -1,11 +1,13 @@
 package i.herman.friends
 
+import androidx.lifecycle.SavedStateHandle
 import i.herman.InstantTaskExecutorExtension
 import i.herman.app.TestDispatchers
 import i.herman.domain.friends.FriendsRepository
 import i.herman.domain.user.Following
 import i.herman.domain.user.Friend
 import i.herman.domain.user.InMemoryUserCatalog
+import i.herman.friends.state.FriendsScreenState
 import i.herman.infrastructure.builder.UserBuilder.Companion.aUser
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -26,19 +28,19 @@ class RenderingFriendsStatesTest {
     )
     private val viewModel = FriendsViewModel(
         FriendsRepository(userCatalog),
-        TestDispatchers()
+        TestDispatchers(),
+        SavedStateHandle()
     )
 
     @Test
     fun friendsStatesDeliveredToAnObserverInParticularOrder() {
-        val deliveredStates = mutableListOf<FriendsState>()
-        viewModel.friendsState.observeForever { deliveredStates.add(it) }
+        val loading = FriendsScreenState(isLoading = true)
+        val loaded = FriendsScreenState(friends = listOf(friendTom, friendAnna))
+        val deliveredStates = mutableListOf<FriendsScreenState>()
+        viewModel.screenState.observeForever { deliveredStates.add(it) }
 
         viewModel.loadFriends(jov.id)
 
-        assertEquals(
-            listOf(FriendsState.Loading, FriendsState.Loaded(listOf(friendTom, friendAnna))),
-            deliveredStates
-        )
+        assertEquals(listOf(loading, loaded), deliveredStates)
     }
 }
