@@ -41,13 +41,9 @@ fun FriendsScreen(
     userId: String
 ) {
     val friendsViewModel = getViewModel<FriendsViewModel>()
-    var loadedUserId by remember { mutableStateOf("") }
     val screenState = friendsViewModel.screenState.observeAsState().value ?: FriendsScreenState()
 
-    if (loadedUserId != userId) {
-        loadedUserId = userId
-        friendsViewModel.loadFriends(loadedUserId)
-    }
+    LaunchedEffect(key1 = userId, block = { friendsViewModel.loadFriends(userId) })
     FriendsScreenContent(
         screenState = screenState,
         onRefresh = { friendsViewModel.loadFriends(userId) },
@@ -93,7 +89,9 @@ private fun FriendsList(
 ) {
     val loadingContentDescription = stringResource(id = R.string.loading)
     SwipeRefresh(
-        modifier = modifier.semantics { contentDescription = loadingContentDescription },
+        modifier = modifier
+            .fillMaxSize()
+            .semantics { contentDescription = loadingContentDescription },
         state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
         onRefresh = { onRefresh() }
     ) {

@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -77,7 +78,7 @@ class TimelineVerificationRobot(
 
     fun loadingIndicatorIsDisplayed() {
         val loading = rule.activity.getString(R.string.loading)
-        rule.onNodeWithTag(loading)
+        rule.onNodeWithContentDescription(loading)
             .assertIsDisplayed()
     }
 

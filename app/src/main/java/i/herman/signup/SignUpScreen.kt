@@ -15,6 +15,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -45,21 +46,21 @@ fun SignUpScreen(
     onSignedUp: (String) -> Unit
 ) {
     val signUpViewModel = getViewModel<SignUpViewModel>()
-    var signedUpUser by remember { mutableStateOf("") }
     val signUpScreenState = signUpViewModel.screenState.observeAsState().value ?: SignUpScreenState()
 
-    if (signUpScreenState.signedUpUserId != signedUpUser) {
-        signedUpUser = signUpScreenState.signedUpUserId
-        onSignedUp(signedUpUser)
-    } else {
-        SignUpScreenContent(
-            screenState = signUpScreenState,
-            onEmailChange = signUpViewModel::updateEmail,
-            onPasswordChange = signUpViewModel::updatePassword,
-            onAboutChange = signUpViewModel::updateAbout,
-            onSignUp = signUpViewModel::createAccount
+    if (signUpScreenState.signedUpUserId.isNotBlank()) {
+        LaunchedEffect(
+            key1 = signUpScreenState.signedUpUserId,
+            block = { onSignedUp(signUpScreenState.signedUpUserId) }
         )
     }
+    SignUpScreenContent(
+        screenState = signUpScreenState,
+        onEmailChange = signUpViewModel::updateEmail,
+        onPasswordChange = signUpViewModel::updatePassword,
+        onAboutChange = signUpViewModel::updateAbout,
+        onSignUp = signUpViewModel::createAccount
+    )
 }
 
 @Composable

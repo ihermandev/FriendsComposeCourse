@@ -20,22 +20,23 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import i.herman.R
 import i.herman.domain.post.Post
 import i.herman.timeline.state.TimelineScreenState
-import i.herman.ui.composables.BlockingLoading
 import i.herman.ui.composables.InfoMessage
 import i.herman.ui.composables.ScreenTitle
 import i.herman.ui.extensions.toDateTime
@@ -48,25 +49,24 @@ fun TimelineScreen(
 ) {
 
     val timelineViewModel = getViewModel<TimelineViewModel>()
-    var loadedUserId by remember { mutableStateOf("") }
     val screenState = timelineViewModel.screenState.observeAsState().value ?: TimelineScreenState()
 
-    if (loadedUserId != userId) {
-        loadedUserId = userId
-        timelineViewModel.timelineFor(loadedUserId)
-    }
+    LaunchedEffect(key1 = userId, block = { timelineViewModel.timelineFor(userId) })
     TimelineScreenContent(
         screenState = screenState,
-        onCreateNewPost = { onCreateNewPost() }
+        onCreateNewPost = { onCreateNewPost() },
+        onRefresh = { timelineViewModel.timelineFor(userId) }
     )
 }
 
 @Composable
 private fun TimelineScreenContent(
+    modifier: Modifier = Modifier,
     screenState: TimelineScreenState,
-    onCreateNewPost: () -> Unit
+    onCreateNewPost: () -> Unit,
+    onRefresh: () -> Unit
 ) {
-    Box {
+    Box(modifier = modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,8 +76,9 @@ private fun TimelineScreenContent(
             Spacer(modifier = Modifier.height(16.dp))
             Box(modifier = Modifier.fillMaxSize()) {
                 PostsList(
+                    isRefreshing = screenState.isLoading,
                     posts = screenState.posts,
-                    modifier = Modifier.align(Alignment.TopCenter)
+                    onRefresh = { onRefresh() }
                 )
                 FloatingActionButton(
                     onClick = { onCreateNewPost() },
@@ -93,25 +94,36 @@ private fun TimelineScreenContent(
             }
         }
         InfoMessage(stringResource = screenState.error)
-        BlockingLoading(isShowing = screenState.isLoading)
     }
 }
 
 @Composable
 private fun PostsList(
+    modifier: Modifier = Modifier,
+    isRefreshing: Boolean,
     posts: List<Post>,
-    modifier: Modifier = Modifier
+    onRefresh: () -> Unit
 ) {
-    if (posts.isEmpty()) {
-        Text(
-            text = stringResource(id = R.string.emptyTimelineMessage),
-            modifier = modifier
-        )
-    } else {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(posts) { post ->
-                PostItem(post = post)
-                Spacer(modifier = Modifier.height(16.dp))
+    val loadingContentDescription = stringResource(id = R.string.loading)
+    SwipeRefresh(
+        modifier = modifier
+            .fillMaxSize()
+            .semantics { contentDescription = loadingContentDescription },
+        state = rememberSwipeRefreshState(isRefreshing = isRefreshing),
+        onRefresh = { onRefresh() }
+    ) {
+        if (posts.isEmpty()) {
+            Text(
+                text = stringResource(id = R.string.emptyTimelineMessage),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(posts) { post ->
+                    PostItem(post = post)
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
@@ -159,5 +171,5 @@ private fun PostsListPreview() {
     val posts = (0..100).map { index ->
         Post("$index", "user$index", "This is a post number $index", index.toLong())
     }
-    PostsList(posts)
+    PostsList(isRefreshing = false, posts = posts) {}
 }
