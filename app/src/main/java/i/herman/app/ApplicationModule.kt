@@ -46,7 +46,13 @@ val applicationModule = module {
         )
     }
 
-    viewModel { CreatePostViewModel(postRepository = get(), dispatchers = get()) }
+    viewModel {
+        CreatePostViewModel(
+            postRepository = get(),
+            savedStateHandle = get(),
+            dispatchers = get()
+        )
+    }
 
     viewModel {
         FriendsViewModel(

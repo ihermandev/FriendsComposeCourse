@@ -2,7 +2,6 @@ package i.herman.postcomposer
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,24 +16,24 @@ import kotlinx.coroutines.withContext
 
 class CreatePostViewModel(
     private val postRepository: PostRepository,
+    private val savedStateHandle: SavedStateHandle,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
-    private val mutablePostState = MutableLiveData<CreatePostState>()
-    val postState: LiveData<CreatePostState> = mutablePostState
-
-    private val savedStateHandle = SavedStateHandle()
-    val postScreenState: LiveData<CreateNewPostScreenState> =
+    val screenState: LiveData<CreateNewPostScreenState> =
         savedStateHandle.getLiveData(SCREEN_STATE_KEY)
+
+    fun updatePostText(postText: String) {
+        val currentState = currentScreenState()
+        updateScreenState(currentState.copy(postText = postText))
+    }
 
     fun createPost(postText: String) {
         viewModelScope.launch {
-            mutablePostState.value = CreatePostState.Loading
             setLoading()
             val result = withContext(dispatchers.background) {
                 postRepository.createNewPost(postText)
             }
-            mutablePostState.value = result
             updateScreenStateFor(result)
         }
     }

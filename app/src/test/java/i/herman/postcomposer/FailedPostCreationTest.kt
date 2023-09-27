@@ -1,5 +1,6 @@
 package i.herman.postcomposer
 
+import androidx.lifecycle.SavedStateHandle
 import com.ihermandev.sharedtest.domain.post.OfflinePostCatalog
 import com.ihermandev.sharedtest.domain.post.UnavailablePostCatalog
 import i.herman.InstantTaskExecutorExtension
@@ -23,6 +24,7 @@ class FailedPostCreationTest {
                 InMemoryUserDataStore("userId"),
                 UnavailablePostCatalog()
             ),
+            SavedStateHandle(),
             TestDispatchers()
         )
 
@@ -30,7 +32,7 @@ class FailedPostCreationTest {
 
         assertEquals(
             CreateNewPostScreenState(error = R.string.creatingPostError),
-            viewModel.postScreenState.value
+            viewModel.screenState.value
         )
     }
 
@@ -41,6 +43,7 @@ class FailedPostCreationTest {
                 InMemoryUserDataStore("userId"),
                 OfflinePostCatalog()
             ),
+            SavedStateHandle(),
             TestDispatchers()
         )
 
@@ -48,7 +51,7 @@ class FailedPostCreationTest {
 
         assertEquals(
             CreateNewPostScreenState(error = R.string.offlineError),
-            viewModel.postScreenState.value
+            viewModel.screenState.value
         )
     }
 }

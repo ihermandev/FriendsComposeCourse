@@ -1,5 +1,6 @@
 package i.herman.postcomposer
 
+import androidx.lifecycle.SavedStateHandle
 import com.ihermandev.sharedtest.infrastructure.ControllableClock
 import i.herman.InstantTaskExecutorExtension
 import i.herman.app.TestDispatchers
@@ -30,12 +31,13 @@ class CreateAPostTest {
                     clock = clock
                 )
             ),
+            SavedStateHandle(),
             TestDispatchers()
         )
 
         viewModel.createPost(postText)
 
-        assertEquals(CreateNewPostScreenState(createdPostId = post.id), viewModel.postScreenState.value)
+        assertEquals(CreateNewPostScreenState(createdPostId = post.id), viewModel.screenState.value)
     }
 
     @Test
@@ -52,6 +54,7 @@ class CreateAPostTest {
                     clock = clock
                 )
             ),
+            SavedStateHandle(),
             TestDispatchers()
         )
 
@@ -59,7 +62,7 @@ class CreateAPostTest {
 
         assertEquals(
             CreateNewPostScreenState(createdPostId = anotherPost.id),
-            viewModel.postScreenState.value
+            viewModel.screenState.value
         )
     }
 }

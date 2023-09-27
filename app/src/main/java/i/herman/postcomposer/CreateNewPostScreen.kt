@@ -7,52 +7,52 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import i.herman.postcomposer.state.CreatePostState
-import i.herman.ui.composables.ScreenTitle
 import i.herman.R
-import i.herman.postcomposer.state.CreateNewPostScreenStateOld
+import i.herman.postcomposer.state.CreateNewPostScreenState
 import i.herman.ui.composables.BlockingLoading
 import i.herman.ui.composables.InfoMessage
+import i.herman.ui.composables.ScreenTitle
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun CreateNewPostScreen(
     onPostCreated: () -> Unit
 ) {
+    val viewModel = getViewModel<CreatePostViewModel>()
+    val createPostState = viewModel.screenState.observeAsState().value ?: CreateNewPostScreenState()
 
-    val createPostViewModel = getViewModel<CreatePostViewModel>()
-    val screenState by remember { mutableStateOf(CreateNewPostScreenStateOld()) }
-    var postText by remember { mutableStateOf("") }
-
-    val createPostState by createPostViewModel.postState.observeAsState()
-
-    when (createPostState) {
-        is CreatePostState.Loading ->
-            screenState.showLoading()
-        is CreatePostState.Created -> {
-            if (screenState.isPostSubmitted) {
-                onPostCreated()
-            }
-        }
-        is CreatePostState.BackendError ->
-            screenState.showMessage(R.string.creatingPostError)
-        is CreatePostState.Offline ->
-            screenState.showMessage(R.string.offlineError)
+    if (createPostState.createdPostId.isNotBlank()) {
+        onPostCreated()
     }
+    CreateNewPostScreenContent(
+        screenState = createPostState,
+        onPostTextUpdated = viewModel::updatePostText,
+        onSubmitPost = { viewModel.createPost(it) }
+    )
+}
 
+@Composable
+private fun CreateNewPostScreenContent(
+    screenState: CreateNewPostScreenState,
+    onPostTextUpdated: (String) -> Unit,
+    onSubmitPost: (String) -> Unit
+) {
     Box {
         Column(
             modifier = Modifier
@@ -62,12 +62,13 @@ fun CreateNewPostScreen(
             ScreenTitle(resource = R.string.createNewPost)
             Spacer(modifier = Modifier.height(16.dp))
             Box(modifier = Modifier.fillMaxSize()) {
-                PostComposer(postText) { postText = it }
+                PostComposer(
+                    postText = screenState.postText,
+                    onValueChange = { onPostTextUpdated(it) },
+                    onDone = { onSubmitPost(screenState.postText) }
+                )
                 FloatingActionButton(
-                    onClick = {
-                        screenState.setPostSubmitted()
-                        createPostViewModel.createPost(postText)
-                    },
+                    onClick = { onSubmitPost(screenState.postText) },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .testTag(stringResource(id = R.string.submitPost))
@@ -79,7 +80,7 @@ fun CreateNewPostScreen(
                 }
             }
         }
-        InfoMessage(stringResource = screenState.currentMessage)
+        InfoMessage(stringResource = screenState.error)
         BlockingLoading(isShowing = screenState.isLoading)
     }
 }
@@ -87,12 +88,15 @@ fun CreateNewPostScreen(
 @Composable
 private fun PostComposer(
     postText: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    onDone: () -> Unit
 ) {
     OutlinedTextField(
         value = postText,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(text = stringResource(id = R.string.newPostHint)) }
+        label = { Text(text = stringResource(id = R.string.newPostHint)) },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { onDone() })
     )
 }
