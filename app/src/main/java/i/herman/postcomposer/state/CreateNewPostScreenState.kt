@@ -1,28 +1,13 @@
 package i.herman.postcomposer.state
 
+import android.os.Parcelable
 import androidx.annotation.StringRes
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import kotlinx.parcelize.Parcelize
 
-class CreateNewPostScreenState {
-
-    var isLoading by mutableStateOf(false)
-    var currentMessage by mutableStateOf(0)
-    var isPostSubmitted by mutableStateOf(false)
-
-    fun setPostSubmitted() {
-        isPostSubmitted = true
-    }
-
-    fun showMessage(@StringRes message: Int) {
-        isLoading = false
-        if (currentMessage != message) {
-            currentMessage = message
-        }
-    }
-
-    fun showLoading() {
-        isLoading = true
-    }
-}
+@Parcelize
+data class CreateNewPostScreenState(
+    val isLoading: Boolean = false,
+    val postText: String = "",
+    val createdPostId: String = "",
+    @StringRes val error: Int = 0
+) : Parcelable

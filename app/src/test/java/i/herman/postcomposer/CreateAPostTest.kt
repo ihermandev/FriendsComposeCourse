@@ -1,14 +1,14 @@
 package i.herman.postcomposer
 
+import com.ihermandev.sharedtest.infrastructure.ControllableClock
 import i.herman.InstantTaskExecutorExtension
 import i.herman.app.TestDispatchers
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.Post
 import i.herman.domain.post.PostRepository
 import i.herman.domain.user.InMemoryUserDataStore
-import com.ihermandev.sharedtest.infrastructure.ControllableClock
 import i.herman.infrastructure.ControllableIdGenerator
-import i.herman.postcomposer.state.CreatePostState
+import i.herman.postcomposer.state.CreateNewPostScreenState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -35,7 +35,7 @@ class CreateAPostTest {
 
         viewModel.createPost(postText)
 
-        assertEquals(CreatePostState.Created(post), viewModel.postState.value)
+        assertEquals(CreateNewPostScreenState(createdPostId = post.id), viewModel.postScreenState.value)
     }
 
     @Test
@@ -57,6 +57,9 @@ class CreateAPostTest {
 
         viewModel.createPost(postText)
 
-        assertEquals(CreatePostState.Created(anotherPost), viewModel.postState.value)
+        assertEquals(
+            CreateNewPostScreenState(createdPostId = anotherPost.id),
+            viewModel.postScreenState.value
+        )
     }
 }

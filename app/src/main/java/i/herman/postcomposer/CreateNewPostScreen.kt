@@ -1,6 +1,5 @@
 package i.herman.postcomposer
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import i.herman.postcomposer.state.CreatePostState
 import i.herman.ui.composables.ScreenTitle
 import i.herman.R
-import i.herman.postcomposer.state.CreateNewPostScreenState
+import i.herman.postcomposer.state.CreateNewPostScreenStateOld
 import i.herman.ui.composables.BlockingLoading
 import i.herman.ui.composables.InfoMessage
 import org.koin.androidx.compose.getViewModel
@@ -35,7 +34,7 @@ fun CreateNewPostScreen(
 ) {
 
     val createPostViewModel = getViewModel<CreatePostViewModel>()
-    val screenState by remember { mutableStateOf(CreateNewPostScreenState()) }
+    val screenState by remember { mutableStateOf(CreateNewPostScreenStateOld()) }
     var postText by remember { mutableStateOf("") }
 
     val createPostState by createPostViewModel.postState.observeAsState()

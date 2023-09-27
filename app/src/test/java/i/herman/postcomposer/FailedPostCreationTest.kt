@@ -6,10 +6,11 @@ import i.herman.InstantTaskExecutorExtension
 import i.herman.app.TestDispatchers
 import i.herman.domain.post.PostRepository
 import i.herman.domain.user.InMemoryUserDataStore
-import i.herman.postcomposer.state.CreatePostState
+import i.herman.postcomposer.state.CreateNewPostScreenState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import i.herman.R
 
 
 @ExtendWith(InstantTaskExecutorExtension::class)
@@ -27,7 +28,10 @@ class FailedPostCreationTest {
 
         viewModel.createPost(":backend:")
 
-        assertEquals(CreatePostState.BackendError, viewModel.postState.value)
+        assertEquals(
+            CreateNewPostScreenState(error = R.string.creatingPostError),
+            viewModel.postScreenState.value
+        )
     }
 
     @Test
@@ -42,6 +46,9 @@ class FailedPostCreationTest {
 
         viewModel.createPost(":offline:")
 
-        assertEquals(CreatePostState.Offline, viewModel.postState.value)
+        assertEquals(
+            CreateNewPostScreenState(error = R.string.offlineError),
+            viewModel.postScreenState.value
+        )
     }
 }
