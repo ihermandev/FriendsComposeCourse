@@ -4,7 +4,9 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import i.herman.MainActivity
 import i.herman.domain.exceptions.BackendException
 import i.herman.domain.exceptions.ConnectionUnavailableException
+import i.herman.domain.friends.ToggleFollowing
 import i.herman.domain.user.ControllableUserCatalog
+import i.herman.domain.user.Following
 import i.herman.domain.user.Friend
 import i.herman.domain.user.InMemoryUserCatalog
 import i.herman.domain.user.User
@@ -98,6 +100,45 @@ class FriendsScreenTest {
         }
     }
 
+    @Test
+    fun followAFriend() {
+        replaceUserCatalogWith(InMemoryUserCatalog(users))
+
+        launchFriends(rule) {
+            tapOnFollowFor(friendAna)
+        } verify {
+            followingIsAddedFor(friendAna)
+        }
+    }
+
+    @Test
+    fun unfollowAFriend() {
+        replaceUserCatalogWith(InMemoryUserCatalog(users))
+
+        launchFriends(rule) {
+            tapOnFollowFor(friendBob)
+            tapOnUnfollowFor(friendBob)
+        } verify {
+            followingIsRemovedFor(friendBob)
+        }
+    }
+
+    @Test
+    fun showsLoadingIndicatorWhenUpdatingFriendship() {
+        val friendsLoad: suspend () -> List<Friend> = { listOf(friendAna, friendBob) }
+        val toggleFollow: suspend (String, String) -> ToggleFollowing = { userId, followingId ->
+            delay(1000)
+            ToggleFollowing(Following(userId, followingId), true)
+        }
+        replaceUserCatalogWith(ControllableUserCatalog(friendsLoad = friendsLoad, followToggle = toggleFollow))
+
+        launchFriends(rule) {
+            tapOnFollowFor(friendAna)
+        } verify {
+            loadingIndicatorIsShownWhenTogglingFriendshipFor(friendAna)
+        }
+    }
+
     @After
     fun tearDown() {
         replaceUserCatalogWith(InMemoryUserCatalog())
@@ -109,5 +150,4 @@ class FriendsScreenTest {
         }
         loadKoinModules(replaceModule)
     }
-
 }

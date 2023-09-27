@@ -24,7 +24,7 @@ class InMemoryUserCatalog(
         return user
     }
 
-    override fun toggleFollowing(userId: String, followerId: String): ToggleFollowing {
+    override suspend fun toggleFollowing(userId: String, followerId: String): ToggleFollowing {
         val following = Following(userId, followerId)
         return if (followings.contains(following)) {
             followings.remove(following)

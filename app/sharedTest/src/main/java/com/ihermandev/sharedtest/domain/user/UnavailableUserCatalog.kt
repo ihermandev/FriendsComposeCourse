@@ -12,7 +12,7 @@ class UnavailableUserCatalog : UserCatalog {
         throw BackendException()
     }
 
-    override fun toggleFollowing(userId: String, followerId: String): ToggleFollowing {
+    override suspend fun toggleFollowing(userId: String, followerId: String): ToggleFollowing {
         throw BackendException()
     }
 

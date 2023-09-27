@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
@@ -43,16 +45,19 @@ fun FriendsScreen(
     if (friendsViewModel.screenState.value == null) {
         friendsViewModel.loadFriends(userId)
     }
-    FriendsScreenContent(screenState = screenState) {
-        friendsViewModel.loadFriends(userId)
-    }
+    FriendsScreenContent(
+        screenState = screenState,
+        onRefresh = { friendsViewModel.loadFriends(userId) },
+        toggleFollowingFor = { friendsViewModel.toggleFollowing(userId, it) }
+    )
 }
 
 @Composable
 fun FriendsScreenContent(
     modifier: Modifier = Modifier,
     screenState: FriendsScreenState,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    toggleFollowingFor: (String) -> Unit
 ) {
     Box(modifier = modifier) {
         Column(
@@ -65,7 +70,9 @@ fun FriendsScreenContent(
             FriendsList(
                 isRefreshing = screenState.isLoading,
                 friends = screenState.friends,
-                onRefresh = { onRefresh() }
+                currentlyUpdatingFriends = screenState.currentlyUpdatingFriends,
+                onRefresh = { onRefresh() },
+                toggleFollowingFor = { toggleFollowingFor(it) }
             )
         }
         InfoMessage(stringResource = screenState.error)
@@ -77,7 +84,9 @@ private fun FriendsList(
     modifier: Modifier = Modifier,
     isRefreshing: Boolean,
     friends: List<Friend>,
-    onRefresh: () -> Unit
+    currentlyUpdatingFriends: List<String>,
+    onRefresh: () -> Unit,
+    toggleFollowingFor: (String) -> Unit
 ) {
     val loadingContentDescription = stringResource(id = R.string.loading)
     SwipeRefresh(
@@ -94,7 +103,11 @@ private fun FriendsList(
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(friends) { friend ->
-                    FriendItem(friend)
+                    FriendItem(
+                        friend = friend,
+                        isTogglingFriendship = friend.user.id in currentlyUpdatingFriends,
+                        toggleFollowingFor = { toggleFollowingFor(it) }
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -104,8 +117,10 @@ private fun FriendsList(
 
 @Composable
 private fun FriendItem(
+    modifier: Modifier = Modifier,
     friend: Friend,
-    modifier: Modifier = Modifier
+    isTogglingFriendship: Boolean,
+    toggleFollowingFor: (String) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -128,8 +143,28 @@ private fun FriendItem(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = friend.user.about)
             }
-            OutlinedButton(onClick = { /*TODO*/ }) {
-                Text(text = stringResource(id = R.string.follow))
+            val followContentDescription = stringResource(R.string.followFriend, friend.user.id)
+            val unfollowContentDescription = stringResource(R.string.unfollowFriend, friend.user.id)
+            val updatingContentDescription = stringResource(R.string.updatingFriendship, friend.user.id)
+            OutlinedButton(
+                modifier = Modifier.semantics {
+                    contentDescription =
+                        if (friend.isFollower) unfollowContentDescription else followContentDescription
+                },
+                enabled = !isTogglingFriendship,
+                onClick = { toggleFollowingFor(friend.user.id) }
+            ) {
+                if (isTogglingFriendship) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .semantics { contentDescription = updatingContentDescription },
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    val resource = if (friend.isFollower) R.string.unfollow else R.string.follow
+                    Text(text = stringResource(id = resource))
+                }
             }
         }
     }

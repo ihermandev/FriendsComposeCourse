@@ -31,11 +31,23 @@ class FriendsViewModel(
         }
     }
 
-    fun toggleFollowing(userId: String, followerId: String) {
-        when (val result = friendsRepository.updateFollowing(userId, followerId)) {
-            is FollowState.Followed -> updateFollowingState(result.following.followedId, true)
-            is FollowState.Unfollowed -> updateFollowingState(result.following.followedId, false)
+    fun toggleFollowing(userId: String, followeeId: String) {
+        viewModelScope.launch {
+            updateListOfTogglingFriendships(followeeId)
+            val updateFollowing = withContext(dispatchers.background) {
+                friendsRepository.updateFollowing(userId, followeeId)
+            }
+            when (updateFollowing) {
+                is FollowState.Followed -> updateFollowingState(updateFollowing.following.followedId, true)
+                is FollowState.Unfollowed -> updateFollowingState(updateFollowing.following.followedId, false)
+            }
         }
+    }
+
+    private fun updateListOfTogglingFriendships(followeeId: String) {
+        val currentState = savedStateHandle[SCREEN_STATE_KEY] ?: FriendsScreenState()
+        val updatedList = currentState.currentlyUpdatingFriends + listOf(followeeId)
+        savedStateHandle[SCREEN_STATE_KEY] = currentState.copy(currentlyUpdatingFriends = updatedList)
     }
 
     private fun updateFollowingState(followedId: String, isFollower: Boolean) {
@@ -44,7 +56,8 @@ class FriendsViewModel(
         val matchingUser = currentState.friends[index]
         val updatedFriends = currentState.friends.toMutableList()
             .apply { set(index, matchingUser.copy(isFollower = isFollower)) }
-        val updatedState = currentState.copy(friends = updatedFriends)
+        val updatedToggles = currentState.currentlyUpdatingFriends - listOf(followedId)
+        val updatedState = currentState.copy(friends = updatedFriends, currentlyUpdatingFriends = updatedToggles)
         savedStateHandle[SCREEN_STATE_KEY] = updatedState
     }
 

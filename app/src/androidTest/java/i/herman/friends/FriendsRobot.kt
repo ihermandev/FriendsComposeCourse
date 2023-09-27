@@ -1,10 +1,7 @@
 package i.herman.friends
 
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import i.herman.MainActivity
 import i.herman.R
@@ -29,6 +26,18 @@ class FriendsRobot(private val rule: MainActivityRule) {
     fun tapOnFriends() {
         val friends = rule.activity.getString(R.string.friends)
         rule.onNodeWithText(friends)
+            .performClick()
+    }
+
+    fun tapOnFollowFor(friend: Friend) {
+        val followFriend = rule.activity.getString(R.string.followFriend, friend.user.id)
+        rule.onNodeWithContentDescription(followFriend)
+            .performClick()
+    }
+
+    fun tapOnUnfollowFor(friend: Friend) {
+        val unfollowFriend = rule.activity.getString(R.string.unfollowFriend, friend.user.id)
+        rule.onNodeWithContentDescription(unfollowFriend)
             .performClick()
     }
 
@@ -81,6 +90,26 @@ class FriendsVerificationRobot(
     fun offlineErrorIsDisplayed() {
         val offlineError = rule.activity.getString(R.string.offlineError)
         rule.onNodeWithText(offlineError)
+            .assertIsDisplayed()
+    }
+
+    fun followingIsAddedFor(friend: Friend) {
+        val unfollow = rule.activity.getString(R.string.unfollow)
+        val unfollowFriend = rule.activity.getString(R.string.unfollowFriend, friend.user.id)
+        rule.onNode(hasText(unfollow).and(hasContentDescription(unfollowFriend)))
+            .assertIsDisplayed()
+    }
+
+    fun followingIsRemovedFor(friend: Friend) {
+        val follow = rule.activity.getString(R.string.follow)
+        val followFriend = rule.activity.getString(R.string.followFriend, friend.user.id)
+        rule.onNode(hasText(follow).and(hasContentDescription(followFriend)))
+            .assertIsDisplayed()
+    }
+
+    fun loadingIndicatorIsShownWhenTogglingFriendshipFor(friend: Friend) {
+        val updatingFriendship = rule.activity.getString(R.string.updatingFriendship, friend.user.id)
+        rule.onNodeWithContentDescription(updatingFriendship)
             .assertIsDisplayed()
     }
 }
