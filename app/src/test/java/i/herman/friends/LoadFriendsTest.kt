@@ -59,4 +59,20 @@ class LoadFriendsTest {
             viewModel.friendsState.value
         )
     }
+
+
+    @Test
+    fun loadedNoFriendsWhenUsingTheSignedUpUserId() {
+        val userCatalog = InMemoryUserCatalog(
+            usersForPassword = mutableMapOf(":irrelevant:" to mutableListOf(tom))
+        )
+        val viewModel = FriendsViewModel(FriendsRepository(userCatalog), TestDispatchers())
+
+        viewModel.loadFriends(tom.id)
+
+        assertEquals(
+            FriendsState.Loaded(emptyList()),
+            viewModel.friendsState.value
+        )
+    }
 }

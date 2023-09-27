@@ -1,5 +1,6 @@
 package i.herman.app
 
+import i.herman.domain.friends.FriendsRepository
 import i.herman.domain.post.InMemoryPostCatalog
 import i.herman.domain.post.PostCatalog
 import i.herman.domain.post.PostRepository
@@ -10,6 +11,7 @@ import i.herman.domain.user.UserCatalog
 import i.herman.domain.user.UserDataStore
 import i.herman.domain.user.UserRepository
 import i.herman.domain.validation.RegexCredentialsValidator
+import i.herman.friends.FriendsViewModel
 import i.herman.postcomposer.CreatePostViewModel
 import i.herman.signup.SignUpViewModel
 import i.herman.timeline.TimelineViewModel
@@ -25,6 +27,7 @@ val applicationModule = module {
     factory { UserRepository(userCatalog = get(), userDataStore = get()) }
     factory { TimelineRepository(userCatalog = get(), postCatalog = get()) }
     factory { PostRepository(userDataStore = get(), postCatalog = get()) }
+    factory { FriendsRepository(userCatalog = get()) }
 
     viewModel {
         SignUpViewModel(
@@ -39,4 +42,6 @@ val applicationModule = module {
     }
 
     viewModel { CreatePostViewModel(postRepository = get(), dispatchers = get()) }
+
+    viewModel { FriendsViewModel(friendsRepository = get(), dispatchers = get()) }
 }

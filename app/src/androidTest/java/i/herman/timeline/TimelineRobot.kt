@@ -2,6 +2,8 @@ package i.herman.timeline
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -17,7 +19,7 @@ fun launchTimelineFor(
     email: String,
     password: String,
     timelineTestRule: MainActivityRule,
-    block: TimelineRobot.() -> Unit,
+    block: TimelineRobot.() -> Unit
 ): TimelineRobot {
     launchSignUpScreen(timelineTestRule) {
         typeEmail(email)
@@ -28,7 +30,7 @@ fun launchTimelineFor(
 }
 
 class TimelineRobot(
-    private val rule: MainActivityRule,
+    private val rule: MainActivityRule
 ) {
 
     fun tapOnCreateNewPost() {
@@ -37,15 +39,21 @@ class TimelineRobot(
             .performClick()
     }
 
+    fun tapOnFriendsTab() {
+        val friends = rule.activity.getString(R.string.friends)
+        rule.onNodeWithText(friends)
+            .performClick()
+    }
+
     infix fun verify(
-        block: TimelineVerificationRobot.() -> Unit,
+        block: TimelineVerificationRobot.() -> Unit
     ): TimelineVerificationRobot {
         return TimelineVerificationRobot(rule).apply(block)
     }
 }
 
 class TimelineVerificationRobot(
-    private val rule: MainActivityRule,
+    private val rule: MainActivityRule
 ) {
 
     fun emptyTimelineMessageIsDisplayed() {
@@ -82,6 +90,13 @@ class TimelineVerificationRobot(
     fun offlineErrorIsDisplayed() {
         val offline = rule.activity.getString(R.string.offlineError)
         rule.onNodeWithText(offline)
+            .assertIsDisplayed()
+    }
+
+    fun friendsScreenIsDisplayed() {
+        val friends = rule.activity.getString(R.string.friends)
+        rule.onAllNodesWithText(friends)
+            .onFirst()
             .assertIsDisplayed()
     }
 }

@@ -5,8 +5,9 @@ import com.ihermandev.sharedtest.domain.post.DelayingPostsCatalog
 import com.ihermandev.sharedtest.domain.post.OfflinePostCatalog
 import com.ihermandev.sharedtest.domain.post.UnavailablePostCatalog
 import i.herman.MainActivity
-import i.herman.domain.post.*
-import kotlinx.coroutines.delay
+import i.herman.domain.post.InMemoryPostCatalog
+import i.herman.domain.post.Post
+import i.herman.domain.post.PostCatalog
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -54,6 +55,15 @@ class TimelineScreenTest {
     }
 
     @Test
+    fun opensFriends() {
+        launchTimelineFor("sam@friends.com", "P@s$12D.", timelineTestRule) {
+            tapOnFriendsTab()
+        } verify {
+            friendsScreenIsDisplayed()
+        }
+    }
+
+    @Test
     fun showsLoadingIndicator() {
         replacePostCatalogWith(DelayingPostsCatalog())
         launchTimelineFor("testLoading@email.com", "sOmEPa$123", timelineTestRule) {
@@ -94,5 +104,4 @@ class TimelineScreenTest {
         }
         loadKoinModules(replaceModule)
     }
-
 }

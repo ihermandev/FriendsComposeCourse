@@ -16,7 +16,7 @@ import org.koin.dsl.module
 
 class SignUpScreenTest {
 
-    @get: Rule
+    @get:Rule
     val signUpTestRule = createAndroidComposeRule<MainActivity>()
 
     private val signUpModule = module {

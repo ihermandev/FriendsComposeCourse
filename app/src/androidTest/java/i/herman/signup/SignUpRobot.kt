@@ -12,13 +12,13 @@ import i.herman.R
 
 fun launchSignUpScreen(
     rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>,
-    block: SignUpRobot.() -> Unit,
+    block: SignUpRobot.() -> Unit
 ): SignUpRobot {
     return SignUpRobot(rule).apply(block)
 }
 
 class SignUpRobot(
-    private val rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>,
+    private val rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>
 ) {
 
     fun typeEmail(email: String) {
@@ -39,15 +39,15 @@ class SignUpRobot(
             .performClick()
     }
 
-     infix fun verify(
-        block: SignUpVerification.() -> Unit,
+    infix fun verify(
+        block: SignUpVerification.() -> Unit
     ): SignUpVerification {
         return SignUpVerification(rule).apply(block)
     }
 }
 
 class SignUpVerification(
-    private val rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>,
+    private val rule: AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>
 ) {
 
     fun timelineScreenIsPresent() {
@@ -97,10 +97,10 @@ class SignUpVerification(
         rule.onNodeWithText(badPassword)
             .assertDoesNotExist()
     }
+
     fun blockingLoadingIsShown() {
         val loading = rule.activity.getString(R.string.loading)
         rule.onNodeWithTag(loading)
             .assertIsDisplayed()
     }
-
 }
