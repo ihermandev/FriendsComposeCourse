@@ -7,6 +7,7 @@ import i.herman.friends.FriendsState
 import i.herman.friends.state.FollowState
 
 
+
 class FriendsRepository(
     private val userCatalog: UserCatalog
 ) {
@@ -22,16 +23,22 @@ class FriendsRepository(
         }
     }
 
-    suspend fun updateFollowing(userId: String, followeeId: String): FollowState {
+    suspend fun updateFollowing(userId: String, followerId: String): FollowState {
         return try {
-            val toggleResult = userCatalog.toggleFollowing(userId, followeeId)
-            if (toggleResult.isAdded) {
-                FollowState.Followed(toggleResult.following)
-            } else {
-                FollowState.Unfollowed(toggleResult.following)
-            }
+            toggleFollowing(userId, followerId)
         } catch (backendException: BackendException) {
             FollowState.BackendError
+        } catch (offlineException: ConnectionUnavailableException) {
+            FollowState.Offline
+        }
+    }
+
+    private suspend fun toggleFollowing(userId: String, followeeId: String): FollowState {
+        val toggleResult = userCatalog.toggleFollowing(userId, followeeId)
+        return if (toggleResult.isAdded) {
+            FollowState.Followed(toggleResult.following)
+        } else {
+            FollowState.Unfollowed(toggleResult.following)
         }
     }
 }
