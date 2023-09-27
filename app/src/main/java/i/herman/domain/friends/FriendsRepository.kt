@@ -33,8 +33,8 @@ class FriendsRepository(
         }
     }
 
-    private suspend fun toggleFollowing(userId: String, followeeId: String): FollowState {
-        val toggleResult = userCatalog.toggleFollowing(userId, followeeId)
+    private suspend fun toggleFollowing(userId: String, followerId: String): FollowState {
+        val toggleResult = userCatalog.toggleFollowing(userId, followerId)
         return if (toggleResult.isAdded) {
             FollowState.Followed(toggleResult.following)
         } else {

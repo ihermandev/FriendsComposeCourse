@@ -23,7 +23,7 @@ class FailUpdatingFollowingTest {
         val friendsRepository = FriendsRepository(UnavailableUserCatalog())
         val viewModel = FriendsViewModel(friendsRepository, dispatchers, savedStateHandle)
 
-        viewModel.toggleFollowing(":userId:", ":followeeId:")
+        viewModel.toggleFollowing(":userId:", ":followerId:")
 
         assertEquals(
             FriendsScreenState(error = R.string.errorFollowingFriend),
@@ -36,7 +36,7 @@ class FailUpdatingFollowingTest {
         val friendsRepository = FriendsRepository(OfflineUserCatalog())
         val viewModel = FriendsViewModel(friendsRepository, dispatchers, savedStateHandle)
 
-        viewModel.toggleFollowing(":userId:", ":followeeId:")
+        viewModel.toggleFollowing(":userId:", ":followerId:")
 
         assertEquals(
             FriendsScreenState(error = R.string.offlineError),

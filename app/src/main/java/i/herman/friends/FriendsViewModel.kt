@@ -31,42 +31,42 @@ class FriendsViewModel(
         }
     }
 
-    fun toggleFollowing(userId: String, followeeId: String) {
+    fun toggleFollowing(userId: String, followerId: String) {
         viewModelScope.launch {
-            updateListOfTogglingFriendships(followeeId)
+            updateListOfTogglingFriendships(followerId)
             val updateFollowing = withContext(dispatchers.background) {
-                friendsRepository.updateFollowing(userId, followeeId)
+                friendsRepository.updateFollowing(userId, followerId)
             }
             when (updateFollowing) {
-                is FollowState.Followed -> setFollowee(updateFollowing.following.followedId)
-                is FollowState.Unfollowed -> removeFollowee(updateFollowing.following.followedId)
-                is FollowState.BackendError -> errorUpdatingFollowing(followeeId, R.string.errorFollowingFriend)
-                is FollowState.Offline -> errorUpdatingFollowing(followeeId, R.string.offlineError)
+                is FollowState.Followed -> setFollower(updateFollowing.following.followedId)
+                is FollowState.Unfollowed -> removeFollower(updateFollowing.following.followedId)
+                is FollowState.BackendError -> errorUpdatingFollowing(followerId, R.string.errorFollowingFriend)
+                is FollowState.Offline -> errorUpdatingFollowing(followerId, R.string.offlineError)
             }
         }
     }
 
-    private fun errorUpdatingFollowing(followeeId: String, errorResource: Int) {
+    private fun errorUpdatingFollowing(followerId: String, errorResource: Int) {
         val currentState = currentScreenState()
         val newState = currentState.copy(
             error = errorResource,
-            updatingFriends = currentState.updatingFriends - listOf(followeeId)
+            updatingFriends = currentState.updatingFriends - listOf(followerId)
         )
         updateScreenState(newState)
     }
 
-    private fun updateListOfTogglingFriendships(followeeId: String) {
+    private fun updateListOfTogglingFriendships(followerId: String) {
         val currentState = currentScreenState()
-        val updatedList = currentState.updatingFriends + listOf(followeeId)
+        val updatedList = currentState.updatingFriends + listOf(followerId)
         updateScreenState(currentState.copy(updatingFriends = updatedList))
     }
 
-    private fun setFollowee(followeeId: String) {
-        updateFollowingState(followeeId, true)
+    private fun setFollower(followerId: String) {
+        updateFollowingState(followerId, true)
     }
 
-    private fun removeFollowee(followeeId: String) {
-        updateFollowingState(followeeId, false)
+    private fun removeFollower(followerId: String) {
+        updateFollowingState(followerId, false)
     }
 
     private fun updateFollowingState(followedId: String, isFollower: Boolean) {
