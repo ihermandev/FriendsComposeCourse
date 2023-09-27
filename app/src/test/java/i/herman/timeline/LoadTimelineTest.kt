@@ -1,5 +1,6 @@
 package i.herman.timeline
 
+import androidx.lifecycle.SavedStateHandle
 import i.herman.InstantTaskExecutorExtension
 import i.herman.app.TestDispatchers
 import i.herman.domain.post.InMemoryPostCatalog
@@ -8,7 +9,7 @@ import i.herman.domain.timeline.TimelineRepository
 import i.herman.domain.user.Following
 import i.herman.domain.user.InMemoryUserCatalog
 import i.herman.infrastructure.builder.UserBuilder.Companion.aUser
-import i.herman.timeline.state.TimelineState
+import i.herman.timeline.state.TimelineScreenState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -42,12 +43,13 @@ class LoadTimelineTest {
         val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
             TimelineRepository(userCatalog, postCatalog),
+            SavedStateHandle(),
             TestDispatchers()
         )
 
         viewModel.timelineFor("tomId")
 
-        assertEquals(TimelineState.Posts(emptyList()), viewModel.timelineState.value)
+        assertEquals(TimelineScreenState(posts = emptyList()), viewModel.screenState.value)
     }
 
     @Test
@@ -56,12 +58,13 @@ class LoadTimelineTest {
         val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
             TimelineRepository(userCatalog, postCatalog),
+            SavedStateHandle(),
             TestDispatchers()
         )
 
         viewModel.timelineFor(tim.id)
 
-        assertEquals(TimelineState.Posts(timPosts), viewModel.timelineState.value)
+        assertEquals(TimelineScreenState(posts = timPosts), viewModel.screenState.value)
     }
 
     @Test
@@ -70,12 +73,13 @@ class LoadTimelineTest {
         val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
             TimelineRepository(userCatalog, postCatalog),
+            SavedStateHandle(),
             TestDispatchers()
         )
 
         viewModel.timelineFor(anna.id)
 
-        assertEquals(TimelineState.Posts(lucyPosts), viewModel.timelineState.value)
+        assertEquals(TimelineScreenState(posts = lucyPosts), viewModel.screenState.value)
     }
 
     @Test
@@ -84,11 +88,12 @@ class LoadTimelineTest {
         val postCatalog = InMemoryPostCatalog(availablePosts)
         val viewModel = TimelineViewModel(
             TimelineRepository(userCatalog, postCatalog),
+            SavedStateHandle(),
             TestDispatchers()
         )
 
         viewModel.timelineFor(sara.id)
 
-        assertEquals(TimelineState.Posts(lucyPosts + saraPosts), viewModel.timelineState.value)
+        assertEquals(TimelineScreenState(posts = lucyPosts + saraPosts), viewModel.screenState.value)
     }
 }
