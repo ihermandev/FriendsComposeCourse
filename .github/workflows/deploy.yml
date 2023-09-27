@@ -136,6 +136,6 @@ jobs:
           serviceAccountJson: service_account.json
           packageName: i.herman
           releaseFiles: app/build/outputs/bundle/release/app-release.aab
-          track: alpha
-          status: 'completed'
+          track: internal
+          status: 'draft'
           whatsNewDirectory: whatsNewDirectory/
