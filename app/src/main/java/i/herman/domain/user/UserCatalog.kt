@@ -1,5 +1,7 @@
 package i.herman.domain.user
 
+import i.herman.domain.friends.ToggleFollowing
+
 interface UserCatalog {
 
     suspend fun createUser(
@@ -7,6 +9,9 @@ interface UserCatalog {
         password: String,
         about: String
     ): User
+
+
+    fun toggleFollowing(userId: String, followerId: String): ToggleFollowing
 
     suspend fun followedBy(userId: String): List<String>
 

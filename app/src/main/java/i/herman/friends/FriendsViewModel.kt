@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import i.herman.R
 import i.herman.app.CoroutineDispatchers
 import i.herman.domain.friends.FriendsRepository
+import i.herman.friends.state.FollowState
 import i.herman.friends.state.FriendsScreenState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,6 +29,23 @@ class FriendsViewModel(
             }
             updateScreenState(result)
         }
+    }
+
+    fun toggleFollowing(userId: String, followerId: String) {
+        when (val result = friendsRepository.updateFollowing(userId, followerId)) {
+            is FollowState.Followed -> updateFollowingState(result.following.followedId, true)
+            is FollowState.Unfollowed -> updateFollowingState(result.following.followedId, false)
+        }
+    }
+
+    private fun updateFollowingState(followedId: String, isFollower: Boolean) {
+        val currentState = savedStateHandle[SCREEN_STATE_KEY] ?: FriendsScreenState()
+        val index = currentState.friends.indexOfFirst { it.user.id == followedId }
+        val matchingUser = currentState.friends[index]
+        val updatedFriends = currentState.friends.toMutableList()
+            .apply { set(index, matchingUser.copy(isFollower = isFollower)) }
+        val updatedState = currentState.copy(friends = updatedFriends)
+        savedStateHandle[SCREEN_STATE_KEY] = updatedState
     }
 
     private fun updateScreenState(friendsState: FriendsState) {

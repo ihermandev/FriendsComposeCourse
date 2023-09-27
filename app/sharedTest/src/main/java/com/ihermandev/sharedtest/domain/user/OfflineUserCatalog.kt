@@ -1,6 +1,7 @@
 package com.ihermandev.sharedtest.domain.user
 
 import i.herman.domain.exceptions.ConnectionUnavailableException
+import i.herman.domain.friends.ToggleFollowing
 import i.herman.domain.user.Friend
 import i.herman.domain.user.User
 import i.herman.domain.user.UserCatalog
@@ -13,6 +14,10 @@ class OfflineUserCatalog : UserCatalog {
         password: String,
         about: String
     ): User {
+        throw ConnectionUnavailableException()
+    }
+
+    override fun toggleFollowing(userId: String, followerId: String): ToggleFollowing {
         throw ConnectionUnavailableException()
     }
 

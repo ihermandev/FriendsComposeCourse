@@ -4,6 +4,7 @@ import i.herman.domain.exceptions.BackendException
 import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.domain.user.UserCatalog
 import i.herman.friends.FriendsState
+import i.herman.friends.state.FollowState
 
 
 class FriendsRepository(
@@ -18,6 +19,15 @@ class FriendsRepository(
             FriendsState.BackendError
         } catch (offlineException: ConnectionUnavailableException) {
             FriendsState.Offline
+        }
+    }
+
+    fun updateFollowing(userId: String, followerId: String): FollowState {
+        val toggleResult = userCatalog.toggleFollowing(userId, followerId)
+        return if (toggleResult.isAdded) {
+            FollowState.Followed(toggleResult.following)
+        } else {
+            FollowState.Unfollowed(toggleResult.following)
         }
     }
 }

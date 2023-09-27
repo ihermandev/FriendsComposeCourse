@@ -1,5 +1,7 @@
 package i.herman.domain.user
 
+import i.herman.domain.friends.ToggleFollowing
+
 class ControllableUserCatalog(
     private val userCreate: suspend (String, String, String) -> User = { email, _, about ->
         User(email.takeWhile { it == '@' } + "Id", email, about)
@@ -10,6 +12,10 @@ class ControllableUserCatalog(
 
     override suspend fun createUser(email: String, password: String, about: String): User {
         return userCreate(email, password, about)
+    }
+
+    override fun toggleFollowing(userId: String, followerId: String): ToggleFollowing {
+        TODO("Not yet implemented")
     }
 
     override suspend fun followedBy(userId: String): List<String> {

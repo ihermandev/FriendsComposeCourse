@@ -1,5 +1,6 @@
 package i.herman.domain.user
 
+import i.herman.domain.friends.ToggleFollowing
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -22,6 +23,10 @@ class StoreSignedUpUserDataTest {
 
         override suspend fun createUser(email: String, password: String, about: String): User {
             return User(desiredUserId, email, about)
+        }
+
+        override fun toggleFollowing(userId: String, followerId: String): ToggleFollowing {
+            TODO("Not yet implemented")
         }
 
         override suspend fun followedBy(userId: String): List<String> {
