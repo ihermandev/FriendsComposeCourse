@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import i.herman.R
 import i.herman.app.CoroutineDispatchers
-import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.domain.friends.FriendsRepository
 import i.herman.friends.state.FollowState
 import i.herman.friends.state.FriendsScreenState
@@ -51,15 +50,15 @@ class FriendsViewModel(
         val currentState = savedStateHandle[SCREEN_STATE_KEY] ?: FriendsScreenState()
         val newState = currentState.copy(
             error = errorResource,
-            currentlyUpdatingFriends = currentState.currentlyUpdatingFriends - listOf(followeeId)
+            updatingFriends = currentState.updatingFriends - listOf(followeeId)
         )
         savedStateHandle[SCREEN_STATE_KEY] = newState
     }
 
     private fun updateListOfTogglingFriendships(followeeId: String) {
         val currentState = savedStateHandle[SCREEN_STATE_KEY] ?: FriendsScreenState()
-        val updatedList = currentState.currentlyUpdatingFriends + listOf(followeeId)
-        savedStateHandle[SCREEN_STATE_KEY] = currentState.copy(currentlyUpdatingFriends = updatedList)
+        val updatedList = currentState.updatingFriends + listOf(followeeId)
+        savedStateHandle[SCREEN_STATE_KEY] = currentState.copy(updatingFriends = updatedList)
     }
 
     private fun updateFollowingState(followedId: String, isFollower: Boolean) {
@@ -68,8 +67,8 @@ class FriendsViewModel(
         val matchingUser = currentState.friends[index]
         val updatedFriends = currentState.friends.toMutableList()
             .apply { set(index, matchingUser.copy(isFollower = isFollower)) }
-        val updatedToggles = currentState.currentlyUpdatingFriends - listOf(followedId)
-        val updatedState = currentState.copy(friends = updatedFriends, currentlyUpdatingFriends = updatedToggles)
+        val updatedToggles = currentState.updatingFriends - listOf(followedId)
+        val updatedState = currentState.copy(friends = updatedFriends, updatingFriends = updatedToggles)
         savedStateHandle[SCREEN_STATE_KEY] = updatedState
     }
 

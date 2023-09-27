@@ -41,9 +41,12 @@ fun FriendsScreen(
     userId: String
 ) {
     val friendsViewModel = getViewModel<FriendsViewModel>()
+    var loadedUserId by remember { mutableStateOf("") }
     val screenState = friendsViewModel.screenState.observeAsState().value ?: FriendsScreenState()
-    if (friendsViewModel.screenState.value == null) {
-        friendsViewModel.loadFriends(userId)
+
+    if (loadedUserId != userId) {
+        loadedUserId = userId
+        friendsViewModel.loadFriends(loadedUserId)
     }
     FriendsScreenContent(
         screenState = screenState,
@@ -53,7 +56,7 @@ fun FriendsScreen(
 }
 
 @Composable
-fun FriendsScreenContent(
+private fun FriendsScreenContent(
     modifier: Modifier = Modifier,
     screenState: FriendsScreenState,
     onRefresh: () -> Unit,
@@ -70,7 +73,7 @@ fun FriendsScreenContent(
             FriendsList(
                 isRefreshing = screenState.isLoading,
                 friends = screenState.friends,
-                currentlyUpdatingFriends = screenState.currentlyUpdatingFriends,
+                currentlyUpdatingFriends = screenState.updatingFriends,
                 onRefresh = { onRefresh() },
                 toggleFollowingFor = { toggleFollowingFor(it) }
             )

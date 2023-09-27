@@ -1,5 +1,6 @@
 package i.herman.signup
 
+import androidx.lifecycle.SavedStateHandle
 import i.herman.InstantTaskExecutorExtension
 import i.herman.app.TestDispatchers
 import i.herman.domain.user.InMemoryUserCatalog
@@ -7,20 +8,24 @@ import i.herman.domain.user.InMemoryUserDataStore
 import i.herman.domain.user.User
 import i.herman.domain.user.UserRepository
 import i.herman.domain.validation.RegexCredentialsValidator
-import i.herman.signup.state.SignUpState
+import i.herman.signup.state.SignUpScreenState
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import i.herman.R
 
 
 @ExtendWith(InstantTaskExecutorExtension::class)
 class CreateAnAccountTest {
 
     private val credentialsValidator = RegexCredentialsValidator()
+    private val stateHandle = SavedStateHandle()
+    private val dispatchers = TestDispatchers()
     private val viewModel = SignUpViewModel(
         credentialsValidator,
         UserRepository(InMemoryUserCatalog(), InMemoryUserDataStore()),
-        TestDispatchers()
+        stateHandle,
+        dispatchers
     )
 
     @Test
@@ -29,7 +34,7 @@ class CreateAnAccountTest {
 
         viewModel.createAccount(maya.email, "MaY@2021", maya.about)
 
-        assertEquals(SignUpState.SignedUp(maya), viewModel.signUpState.value)
+        assertEquals(SignUpScreenState(signedUpUserId = maya.id), viewModel.screenState.value)
     }
 
     @Test
@@ -38,7 +43,7 @@ class CreateAnAccountTest {
 
         viewModel.createAccount(bob.email, "Ple@seSubscribe1", bob.about)
 
-        assertEquals(SignUpState.SignedUp(bob), viewModel.signUpState.value)
+        assertEquals(SignUpScreenState(signedUpUserId = bob.id), viewModel.screenState.value)
     }
 
     @Test
@@ -50,10 +55,13 @@ class CreateAnAccountTest {
             InMemoryUserCatalog(usersForPassword),
             InMemoryUserDataStore()
         )
-        val viewModel = SignUpViewModel(credentialsValidator, userRepository, TestDispatchers())
+        val viewModel = SignUpViewModel(credentialsValidator, userRepository, stateHandle, dispatchers)
 
         viewModel.createAccount(anna.email, password, anna.about)
 
-        assertEquals(SignUpState.DuplicateAccount, viewModel.signUpState.value)
+        assertEquals(
+            SignUpScreenState(error = R.string.duplicateAccountError),
+            viewModel.screenState.value
+        )
     }
 }
