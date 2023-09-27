@@ -22,12 +22,16 @@ class FriendsRepository(
         }
     }
 
-    suspend fun updateFollowing(userId: String, followerId: String): FollowState {
-        val toggleResult = userCatalog.toggleFollowing(userId, followerId)
-        return if (toggleResult.isAdded) {
-            FollowState.Followed(toggleResult.following)
-        } else {
-            FollowState.Unfollowed(toggleResult.following)
+    suspend fun updateFollowing(userId: String, followeeId: String): FollowState {
+        return try {
+            val toggleResult = userCatalog.toggleFollowing(userId, followeeId)
+            if (toggleResult.isAdded) {
+                FollowState.Followed(toggleResult.following)
+            } else {
+                FollowState.Unfollowed(toggleResult.following)
+            }
+        } catch (backendException: BackendException) {
+            FollowState.BackendError
         }
     }
 }

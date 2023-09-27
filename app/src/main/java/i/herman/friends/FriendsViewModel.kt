@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import i.herman.R
 import i.herman.app.CoroutineDispatchers
+import i.herman.domain.exceptions.ConnectionUnavailableException
 import i.herman.domain.friends.FriendsRepository
 import i.herman.friends.state.FollowState
 import i.herman.friends.state.FriendsScreenState
@@ -35,13 +36,27 @@ class FriendsViewModel(
         viewModelScope.launch {
             updateListOfTogglingFriendships(followeeId)
             val updateFollowing = withContext(dispatchers.background) {
-                friendsRepository.updateFollowing(userId, followeeId)
+                try {
+                    friendsRepository.updateFollowing(userId, followeeId)
+                } catch (e: ConnectionUnavailableException) {
+                    errorUpdatingFollowing(followeeId, R.string.offlineError)
+                }
             }
             when (updateFollowing) {
                 is FollowState.Followed -> updateFollowingState(updateFollowing.following.followedId, true)
                 is FollowState.Unfollowed -> updateFollowingState(updateFollowing.following.followedId, false)
+                is FollowState.BackendError -> errorUpdatingFollowing(followeeId, R.string.errorFollowingFriend)
             }
         }
+    }
+
+    private fun errorUpdatingFollowing(followeeId: String, errorResource: Int) {
+        val currentState = savedStateHandle[SCREEN_STATE_KEY] ?: FriendsScreenState()
+        val newState = currentState.copy(
+            error = errorResource,
+            currentlyUpdatingFriends = currentState.currentlyUpdatingFriends - listOf(followeeId)
+        )
+        savedStateHandle[SCREEN_STATE_KEY] = newState
     }
 
     private fun updateListOfTogglingFriendships(followeeId: String) {
