@@ -1,6 +1,7 @@
 package com.ihermandev.sharedtest.domain.user
 
 import i.herman.domain.exceptions.BackendException
+import i.herman.domain.user.Friend
 import i.herman.domain.user.User
 import i.herman.domain.user.UserCatalog
 
@@ -10,7 +11,11 @@ class UnavailableUserCatalog : UserCatalog {
         throw BackendException()
     }
 
-    override fun followedBy(userId: String): List<String> {
+    override suspend fun followedBy(userId: String): List<String> {
+        throw BackendException()
+    }
+
+    override suspend fun loadFriendsFor(userId: String): List<Friend> {
         throw BackendException()
     }
 }

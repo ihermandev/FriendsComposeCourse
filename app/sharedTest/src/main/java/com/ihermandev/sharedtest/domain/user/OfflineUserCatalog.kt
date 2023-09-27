@@ -1,8 +1,10 @@
 package com.ihermandev.sharedtest.domain.user
 
 import i.herman.domain.exceptions.ConnectionUnavailableException
+import i.herman.domain.user.Friend
 import i.herman.domain.user.User
 import i.herman.domain.user.UserCatalog
+
 
 class OfflineUserCatalog : UserCatalog {
 
@@ -14,7 +16,11 @@ class OfflineUserCatalog : UserCatalog {
         throw ConnectionUnavailableException()
     }
 
-    override fun followedBy(userId: String): List<String> {
+    override suspend fun followedBy(userId: String): List<String> {
+        throw ConnectionUnavailableException()
+    }
+
+    override suspend fun loadFriendsFor(userId: String): List<Friend> {
         throw ConnectionUnavailableException()
     }
 }

@@ -23,8 +23,8 @@
 - post stuff (text)
 
 ### Folks
-- find people
-- follow people
+- find friends
+- follow friends
 
 ### Friends
 - see friends

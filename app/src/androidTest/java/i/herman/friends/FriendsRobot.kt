@@ -1,4 +1,4 @@
-package i.herman.people
+package i.herman.friends
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
@@ -15,34 +15,34 @@ private typealias MainActivityRule = AndroidComposeTestRule<ActivityScenarioRule
 
 fun launchTimeline(
     rule: MainActivityRule,
-    block: PeopleRobot.() -> Unit
-): PeopleRobot {
+    block: FriendsRobot.() -> Unit
+): FriendsRobot {
     launchTimelineFor("email@email.com", "Pas$123.", rule) {}
-    return PeopleRobot(rule).apply(block)
+    return FriendsRobot(rule).apply(block)
 }
 
-class PeopleRobot(private val rule: MainActivityRule) {
+class FriendsRobot(private val rule: MainActivityRule) {
 
-    fun tapOnPeople() {
-        val people = rule.activity.getString(R.string.people)
-        rule.onNodeWithText(people)
+    fun tapOnFriends() {
+        val friends = rule.activity.getString(R.string.friends)
+        rule.onNodeWithText(friends)
             .performClick()
     }
 
     infix fun verify(
-        block: PeopleVerificationRobot.() -> Unit
-    ): PeopleVerificationRobot {
-        return PeopleVerificationRobot(rule).apply(block)
+        block: FriendsVerificationRobot.() -> Unit
+    ): FriendsVerificationRobot {
+        return FriendsVerificationRobot(rule).apply(block)
     }
 }
 
-class PeopleVerificationRobot(
+class FriendsVerificationRobot(
     private val rule: MainActivityRule
 ) {
 
-    fun peopleScreenIsPresent() {
-        val people = rule.activity.getString(R.string.people)
-        rule.onAllNodesWithText(people)
+    fun friendsScreenIsPresent() {
+        val friends = rule.activity.getString(R.string.friends)
+        rule.onAllNodesWithText(friends)
             .onFirst()
             .assertIsDisplayed()
     }

@@ -1,21 +1,21 @@
-package i.herman.people
+package i.herman.friends
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import i.herman.MainActivity
 import org.junit.Rule
 import org.junit.Test
 
-class PeopleScreenTest {
+class FriendsScreenTest {
 
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun displaysPeople() {
+    fun displaysFriends() {
         launchTimeline(rule) {
-            tapOnPeople()
+            tapOnFriends()
         } verify {
-            peopleScreenIsPresent()
+            friendsScreenIsPresent()
         }
     }
 }
