@@ -31,7 +31,7 @@ class SignUpScreenTest {
     @Test
     fun performSignUp() {
         launchSignUpScreen(signUpTestRule) {
-            typeEmail("izzi@friends.app")
+            typeEmail("jovmit@friends.app")
             typePassword("PassW0rd!")
             submit()
         } verify {
@@ -128,7 +128,12 @@ class SignUpScreenTest {
 
     @Test
     fun displayBlockingLoading() {
-        replaceUserCatalogWith(DelayingUserCatalog())
+        val createUser: suspend (String, String, String) -> User = { id, email, about ->
+            delay(1000)
+            User(id, email, about)
+        }
+        replaceUserCatalogWith(ControllableUserCatalog(createUser))
+
         launchSignUpScreen(signUpTestRule) {
             typeEmail("caly@friends.com")
             typePassword("C@lyP1ss#")
@@ -148,21 +153,5 @@ class SignUpScreenTest {
             factory { userCatalog }
         }
         loadKoinModules(replaceModule)
-    }
-
-    class DelayingUserCatalog : UserCatalog {
-
-        override suspend fun createUser(email: String, password: String, about: String): User {
-            delay(1000)
-            return User("someId", email, about)
-        }
-
-        override suspend fun followedBy(userId: String): List<String> {
-            TODO("Not yet implemented")
-        }
-
-        override suspend fun loadFriendsFor(userId: String): List<Friend> {
-            TODO("Not yet implemented")
-        }
     }
 }

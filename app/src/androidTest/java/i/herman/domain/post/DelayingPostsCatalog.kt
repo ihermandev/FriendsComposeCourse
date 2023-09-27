@@ -1,7 +1,5 @@
-package com.ihermandev.sharedtest.domain.post
+package i.herman.domain.post
 
-import i.herman.domain.post.Post
-import i.herman.domain.post.PostCatalog
 import kotlinx.coroutines.delay
 
 class DelayingPostsCatalog : PostCatalog {

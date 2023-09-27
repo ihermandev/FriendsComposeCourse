@@ -1,7 +1,7 @@
 package i.herman.timeline
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.ihermandev.sharedtest.domain.post.DelayingPostsCatalog
+import i.herman.domain.post.DelayingPostsCatalog
 import com.ihermandev.sharedtest.domain.post.OfflinePostCatalog
 import com.ihermandev.sharedtest.domain.post.UnavailablePostCatalog
 import i.herman.MainActivity
